@@ -1,0 +1,6 @@
+{
+  "name": "File Type Organizer",
+  "description": "A web application to extract specific file types from a dropped folder and organize them for download.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
