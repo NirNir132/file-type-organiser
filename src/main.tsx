@@ -579,10 +579,12 @@ function FileTypeOrganizer() {
 	return (
 		<div style={containerStyle}>
 			<header>
-				<h1 style={titleStyle}>File Type Organizer</h1>
+				<h1 style={titleStyle}>Extract Files by Type Online</h1>
 				<p style={subtitleStyle}>
-					Effortlessly drag & drop files or folders, specify a file type, and
-					instantly download your organized files as a ZIP archive.
+					Extract specific file types from folders instantly. Drag & drop files
+					or folders, filter by extension, and download your organized files as
+					a ZIP archive. Perfect for organizing documents, images, and media
+					files.
 				</p>
 			</header>
 
@@ -818,7 +820,36 @@ function FileTypeOrganizer() {
 					color: "#6b7280",
 				}}
 			>
-				<p>&copy; 2025 File Organizer App. All rights reserved.</p>
+				<div style={{ marginBottom: "2rem" }}>
+					<h2
+						style={{
+							fontSize: "1.25rem",
+							fontWeight: "600",
+							color: "#1f2937",
+							marginBottom: "1rem",
+						}}
+					>
+						How to Extract Files by Type
+					</h2>
+					<p style={{ marginBottom: "1rem", lineHeight: "1.6" }}>
+						OrganiseFiles makes it easy to extract specific file types from any
+						folder. Simply drag and drop your files or folders, enter the file
+						extension you want to extract (like pdf, jpg, docx, or txt), and
+						download your filtered files as a ZIP archive. Perfect for
+						organizing documents, extracting images from photo collections, or
+						filtering media files.
+					</p>
+					<p style={{ marginBottom: "1rem", lineHeight: "1.6" }}>
+						<strong>Supported file types:</strong> Extract PDFs, Word documents,
+						Excel files, images (JPG, PNG, GIF), videos (MP4, AVI, MOV), audio
+						files (MP3, WAV), text files, and many more. Works with nested
+						folders and unlimited file sizes.
+					</p>
+				</div>
+				<p>
+					&copy; 2025 OrganiseFiles.live - Extract Files Online. All rights
+					reserved.
+				</p>
 				<p
 					style={{
 						fontSize: "0.75rem",
@@ -826,7 +857,7 @@ function FileTypeOrganizer() {
 						marginTop: "0.25rem",
 					}}
 				>
-					Crafted with React and a sprinkle of innovation.
+					Free online file extraction tool. No downloads required.
 				</p>
 			</footer>
 
