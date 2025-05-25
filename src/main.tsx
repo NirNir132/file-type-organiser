@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-// File Type Organizer with Inline Styles
+// File Type Organizer with Inline Styles and Debug Info
 function FileTypeOrganizer() {
 	const [dragActive, setDragActive] = React.useState(false);
 	const [files, setFiles] = React.useState<File[]>([]);
@@ -10,10 +10,18 @@ function FileTypeOrganizer() {
 	const [isProcessing, setIsProcessing] = React.useState(false);
 	const [error, setError] = React.useState<string | null>(null);
 
+	// Debug logging
+	React.useEffect(() => {
+		console.log("🎨 File Type Organizer loaded with inline styles");
+		console.log("📍 Current URL:", window.location.href);
+		console.log("🔧 React version:", React.version);
+	}, []);
+
 	const handleDragEnter = React.useCallback((e: React.DragEvent) => {
 		e.preventDefault();
 		e.stopPropagation();
 		setDragActive(true);
+		console.log("📥 Drag enter detected");
 	}, []);
 
 	const handleDragLeave = React.useCallback((e: React.DragEvent) => {
@@ -33,6 +41,7 @@ function FileTypeOrganizer() {
 		setDragActive(false);
 		setError(null);
 
+		console.log("📁 Files dropped");
 		const items = e.dataTransfer.items;
 		if (!items || items.length === 0) {
 			setError("No files were dropped. Please try again.");
@@ -51,9 +60,11 @@ function FileTypeOrganizer() {
 				}
 			}
 
+			console.log(`✅ Processed ${allFiles.length} files`);
 			setFiles(allFiles);
 			setIsProcessing(false);
 		} catch (err) {
+			console.error("❌ Error processing files:", err);
 			setError("Error processing files. Please try again.");
 			setIsProcessing(false);
 		}
@@ -71,12 +82,14 @@ function FileTypeOrganizer() {
 		const filtered = files.filter((file) =>
 			file.name.toLowerCase().endsWith(ext)
 		);
+		console.log(`🔍 Filtered ${filtered.length} files with extension ${ext}`);
 		setFilteredFiles(filtered);
 		setError(null);
 	}, [extension, files]);
 
 	const downloadFile = React.useCallback((file: File) => {
 		try {
+			console.log(`⬇️ Downloading file: ${file.name}`);
 			const url = URL.createObjectURL(file);
 			const a = document.createElement("a");
 			a.href = url;
@@ -86,11 +99,12 @@ function FileTypeOrganizer() {
 			document.body.removeChild(a);
 			URL.revokeObjectURL(url);
 		} catch (err) {
+			console.error("❌ Download error:", err);
 			setError("Error downloading file. Please try again.");
 		}
 	}, []);
 
-	// Inline styles for guaranteed rendering
+	// Enhanced inline styles with better browser compatibility
 	const containerStyle: React.CSSProperties = {
 		minHeight: "100vh",
 		background:
@@ -99,11 +113,14 @@ function FileTypeOrganizer() {
 		flexDirection: "column",
 		alignItems: "center",
 		padding: "3rem 1rem",
-		fontFamily: "system-ui, -apple-system, sans-serif",
+		fontFamily:
+			"system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+		margin: 0,
+		boxSizing: "border-box",
 	};
 
 	const titleStyle: React.CSSProperties = {
-		fontSize: "3rem",
+		fontSize: "clamp(2rem, 5vw, 3rem)",
 		fontWeight: "800",
 		background: "linear-gradient(135deg, #0284c7, #4338ca, #7c3aed)",
 		WebkitBackgroundClip: "text",
@@ -111,6 +128,7 @@ function FileTypeOrganizer() {
 		backgroundClip: "text",
 		marginBottom: "1rem",
 		textAlign: "center",
+		lineHeight: 1.2,
 	};
 
 	const subtitleStyle: React.CSSProperties = {
@@ -119,6 +137,7 @@ function FileTypeOrganizer() {
 		maxWidth: "32rem",
 		textAlign: "center",
 		marginBottom: "3rem",
+		lineHeight: 1.6,
 	};
 
 	const dropZoneStyle: React.CSSProperties = {
@@ -132,9 +151,9 @@ function FileTypeOrganizer() {
 		transition: "all 0.3s ease",
 		backgroundColor: dragActive ? "#e0f2fe" : "#ffffff",
 		boxShadow: dragActive
-			? "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
+			? "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 4px rgba(14, 165, 233, 0.3)"
 			: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-		transform: dragActive ? "scale(1.05)" : "scale(1)",
+		transform: dragActive ? "scale(1.02)" : "scale(1)",
 		marginBottom: "2rem",
 	};
 
@@ -143,6 +162,7 @@ function FileTypeOrganizer() {
 		height: "3rem",
 		color: "#94a3b8",
 		marginBottom: "1rem",
+		display: "block",
 	};
 
 	const cardStyle: React.CSSProperties = {
@@ -153,6 +173,7 @@ function FileTypeOrganizer() {
 		borderRadius: "1rem",
 		boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
 		marginBottom: "2rem",
+		border: "1px solid rgba(0, 0, 0, 0.05)",
 	};
 
 	const buttonStyle: React.CSSProperties = {
@@ -164,6 +185,7 @@ function FileTypeOrganizer() {
 		fontWeight: "600",
 		cursor: "pointer",
 		transition: "all 0.3s ease",
+		fontSize: "1rem",
 	};
 
 	const inputStyle: React.CSSProperties = {
@@ -173,6 +195,7 @@ function FileTypeOrganizer() {
 		borderRadius: "0.5rem",
 		fontSize: "1rem",
 		outline: "none",
+		transition: "border-color 0.2s ease",
 	};
 
 	return (
@@ -226,6 +249,7 @@ function FileTypeOrganizer() {
 							fill="none"
 							stroke="currentColor"
 							viewBox="0 0 24 24"
+							xmlns="http://www.w3.org/2000/svg"
 						>
 							<path
 								strokeLinecap="round"
@@ -285,7 +309,14 @@ function FileTypeOrganizer() {
 							Found {files.length} files. Enter a file extension to filter:
 						</p>
 
-						<div style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
+						<div
+							style={{
+								display: "flex",
+								gap: "1rem",
+								marginBottom: "1rem",
+								flexWrap: "wrap",
+							}}
+						>
 							<input
 								type="text"
 								value={extension}
@@ -322,25 +353,22 @@ function FileTypeOrganizer() {
 												justifyContent: "space-between",
 												alignItems: "center",
 												marginBottom: "0.5rem",
+												flexWrap: "wrap",
+												gap: "0.5rem",
 											}}
 										>
-											<div>
+											<div style={{ flex: 1, minWidth: "200px" }}>
 												<span
 													style={{
 														fontSize: "0.875rem",
 														fontWeight: "500",
 														color: "#1f2937",
+														display: "block",
 													}}
 												>
 													{file.name}
 												</span>
-												<span
-													style={{
-														fontSize: "0.75rem",
-														color: "#6b7280",
-														marginLeft: "0.5rem",
-													}}
-												>
+												<span style={{ fontSize: "0.75rem", color: "#6b7280" }}>
 													{(file.size / 1024).toFixed(1)} KB
 												</span>
 											</div>
@@ -394,14 +422,105 @@ function FileTypeOrganizer() {
 					0% { transform: rotate(0deg); }
 					100% { transform: rotate(360deg); }
 				}
+				
+				* {
+					box-sizing: border-box;
+				}
+				
+				body {
+					margin: 0;
+					padding: 0;
+				}
 			`}</style>
 		</div>
 	);
 }
 
-// Clean initialization
+// Enhanced initialization with error handling
+console.log("🚀 Initializing File Type Organizer...");
+
 const rootElement = document.getElementById("root");
-if (rootElement) {
-	const root = ReactDOM.createRoot(rootElement);
-	root.render(React.createElement(FileTypeOrganizer));
+if (!rootElement) {
+	console.error("❌ Root element not found!");
+	document.body.innerHTML = `
+		<div style="
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-height: 100vh;
+			background: linear-gradient(135deg, #e0f2fe 0%, #e8eaf6 50%, #f3e5f5 100%);
+			font-family: system-ui, sans-serif;
+			text-align: center;
+			padding: 2rem;
+		">
+			<div style="
+				background: white;
+				padding: 2rem;
+				border-radius: 1rem;
+				box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+				max-width: 400px;
+			">
+				<h2 style="color: #dc2626; margin-bottom: 1rem;">⚠️ Loading Error</h2>
+				<p style="color: #374151; margin-bottom: 1rem;">The root element was not found. Please refresh the page.</p>
+				<button onclick="window.location.reload()" style="
+					background: linear-gradient(135deg, #0ea5e9, #4338ca);
+					color: white;
+					border: none;
+					padding: 0.75rem 1.5rem;
+					border-radius: 0.5rem;
+					cursor: pointer;
+					font-weight: 600;
+				">
+					🔄 Reload Page
+				</button>
+			</div>
+		</div>
+	`;
+} else {
+	try {
+		console.log("✅ Root element found, creating React app...");
+		const root = ReactDOM.createRoot(rootElement);
+		root.render(React.createElement(FileTypeOrganizer));
+		console.log("🎉 React app rendered successfully!");
+	} catch (error) {
+		console.error("❌ Failed to render React app:", error);
+		rootElement.innerHTML = `
+			<div style="
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				min-height: 100vh;
+				background: linear-gradient(135deg, #e0f2fe 0%, #e8eaf6 50%, #f3e5f5 100%);
+				font-family: system-ui, sans-serif;
+				text-align: center;
+				padding: 2rem;
+			">
+				<div style="
+					background: white;
+					padding: 2rem;
+					border-radius: 1rem;
+					box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+					max-width: 400px;
+				">
+					<h2 style="color: #dc2626; margin-bottom: 1rem;">❌ React Error</h2>
+					<p style="color: #374151; margin-bottom: 1rem;">Failed to load the React application.</p>
+					<details style="text-align: left; margin-bottom: 1rem;">
+						<summary style="cursor: pointer; color: #6b7280;">Error Details</summary>
+						<pre style="background: #f3f4f6; padding: 1rem; border-radius: 0.5rem; overflow: auto; font-size: 0.75rem; margin-top: 0.5rem;">${error}</pre>
+					</details>
+					<button onclick="window.location.reload()" style="
+						background: linear-gradient(135deg, #0ea5e9, #4338ca);
+						color: white;
+						border: none;
+						padding: 0.75rem 1.5rem;
+						border-radius: 0.5rem;
+						cursor: pointer;
+						font-weight: 600;
+					">
+						🔄 Reload Page
+					</button>
+				</div>
+			</div>
+		`;
+	}
 }
