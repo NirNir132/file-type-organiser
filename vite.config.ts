@@ -15,6 +15,7 @@ export default defineConfig(({ mode }) => {
 				"@": path.resolve(__dirname, "./src"),
 			},
 		},
-		base: "/file-type-organizer/",
+		// Fix: Set base for GitHub Pages deployment (correct repo name)
+		base: "/file-type-organiser/",
 	};
 });
