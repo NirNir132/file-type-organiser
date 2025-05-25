@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-// File Type Organizer with Inline Styles and Debug Info
+// File Type Organizer with Enhanced Folder Support
 function FileTypeOrganizer() {
 	const [dragActive, setDragActive] = React.useState(false);
 	const [files, setFiles] = React.useState<File[]>([]);
@@ -16,6 +16,73 @@ function FileTypeOrganizer() {
 		console.log("📍 Current URL:", window.location.href);
 		console.log("🔧 React version:", React.version);
 	}, []);
+
+	// Helper function to recursively process directory entries
+	const processDirectoryEntry = async (
+		entry: FileSystemEntry
+	): Promise<File[]> => {
+		return new Promise((resolve, reject) => {
+			if (entry.isFile) {
+				const fileEntry = entry as FileSystemFileEntry;
+				fileEntry.file(
+					(file) => {
+						console.log(
+							`📄 Found file: ${file.name} (${(file.size / 1024).toFixed(
+								1
+							)} KB)`
+						);
+						resolve([file]);
+					},
+					(error) => {
+						console.error(`❌ Error reading file ${entry.name}:`, error);
+						resolve([]);
+					}
+				);
+			} else if (entry.isDirectory) {
+				const dirEntry = entry as FileSystemDirectoryEntry;
+				console.log(`📁 Processing directory: ${entry.name}`);
+
+				const dirReader = dirEntry.createReader();
+				const allFiles: File[] = [];
+
+				const readEntries = () => {
+					dirReader.readEntries(
+						async (entries) => {
+							if (entries.length === 0) {
+								// No more entries, resolve with collected files
+								resolve(allFiles);
+								return;
+							}
+
+							// Process all entries in this batch
+							const promises = entries.map((entry) =>
+								processDirectoryEntry(entry)
+							);
+							try {
+								const results = await Promise.all(promises);
+								const flatFiles = results.flat();
+								allFiles.push(...flatFiles);
+
+								// Continue reading more entries
+								readEntries();
+							} catch (error) {
+								console.error(`❌ Error processing directory entries:`, error);
+								resolve(allFiles);
+							}
+						},
+						(error) => {
+							console.error(`❌ Error reading directory ${entry.name}:`, error);
+							resolve(allFiles);
+						}
+					);
+				};
+
+				readEntries();
+			} else {
+				resolve([]);
+			}
+		});
+	};
 
 	const handleDragEnter = React.useCallback((e: React.DragEvent) => {
 		e.preventDefault();
@@ -41,7 +108,7 @@ function FileTypeOrganizer() {
 		setDragActive(false);
 		setError(null);
 
-		console.log("📁 Files dropped");
+		console.log("📁 Files/folders dropped");
 		const items = e.dataTransfer.items;
 		if (!items || items.length === 0) {
 			setError("No files were dropped. Please try again.");
@@ -52,15 +119,47 @@ function FileTypeOrganizer() {
 		const allFiles: File[] = [];
 
 		try {
+			console.log(`🔍 Processing ${items.length} dropped items...`);
+
+			// Process each dropped item
 			for (let i = 0; i < items.length; i++) {
 				const item = items[i];
+
 				if (item.kind === "file") {
-					const file = item.getAsFile();
-					if (file) allFiles.push(file);
+					// Check if it's a directory or file
+					const entry = item.webkitGetAsEntry();
+					if (entry) {
+						console.log(
+							`📦 Processing entry: ${entry.name} (${
+								entry.isDirectory ? "directory" : "file"
+							})`
+						);
+						const files = await processDirectoryEntry(entry);
+						allFiles.push(...files);
+					} else {
+						// Fallback for browsers that don't support webkitGetAsEntry
+						const file = item.getAsFile();
+						if (file) {
+							console.log(`📄 Direct file: ${file.name}`);
+							allFiles.push(file);
+						}
+					}
 				}
 			}
 
-			console.log(`✅ Processed ${allFiles.length} files`);
+			console.log(
+				`✅ Processed ${allFiles.length} total files from all sources`
+			);
+
+			// Log file breakdown by extension
+			const extensionCounts = allFiles.reduce((acc, file) => {
+				const ext = file.name.split(".").pop()?.toLowerCase() || "no-extension";
+				acc[ext] = (acc[ext] || 0) + 1;
+				return acc;
+			}, {} as Record<string, number>);
+
+			console.log("📊 File breakdown by extension:", extensionCounts);
+
 			setFiles(allFiles);
 			setIsProcessing(false);
 		} catch (err) {
@@ -83,6 +182,12 @@ function FileTypeOrganizer() {
 			file.name.toLowerCase().endsWith(ext)
 		);
 		console.log(`🔍 Filtered ${filtered.length} files with extension ${ext}`);
+
+		// Log the filtered files
+		filtered.forEach((file) => {
+			console.log(`  📄 ${file.name} (${(file.size / 1024).toFixed(1)} KB)`);
+		});
+
 		setFilteredFiles(filtered);
 		setError(null);
 	}, [extension, files]);
@@ -203,8 +308,8 @@ function FileTypeOrganizer() {
 			<header>
 				<h1 style={titleStyle}>File Type Organizer</h1>
 				<p style={subtitleStyle}>
-					Effortlessly drag & drop files, specify a file type, and instantly
-					download your organized files.
+					Effortlessly drag & drop files or folders, specify a file type, and
+					instantly download your organized files.
 				</p>
 			</header>
 
@@ -266,10 +371,13 @@ function FileTypeOrganizer() {
 								margin: 0,
 							}}
 						>
-							{dragActive ? "Release to Scan Files!" : "Drag & Drop Files Here"}
+							{dragActive
+								? "Release to Scan Files!"
+								: "Drag & Drop Files or Folders Here"}
 						</p>
 						<p style={{ fontSize: "0.875rem", color: "#6b7280", margin: 0 }}>
-							Drop your files and we'll help you organize them by type.
+							Drop files or entire folders and we'll recursively scan all files
+							inside.
 						</p>
 					</div>
 				</div>
@@ -288,7 +396,9 @@ function FileTypeOrganizer() {
 									margin: "0 auto 1rem",
 								}}
 							></div>
-							<p style={{ color: "#374151", margin: 0 }}>Processing files...</p>
+							<p style={{ color: "#374151", margin: 0 }}>
+								Processing files and folders...
+							</p>
 						</div>
 					</div>
 				)}
@@ -306,7 +416,8 @@ function FileTypeOrganizer() {
 							Filter Your Files
 						</h2>
 						<p style={{ color: "#6b7280", marginBottom: "1rem" }}>
-							Found {files.length} files. Enter a file extension to filter:
+							Found {files.length} files total. Enter a file extension to
+							filter:
 						</p>
 
 						<div
@@ -321,7 +432,7 @@ function FileTypeOrganizer() {
 								type="text"
 								value={extension}
 								onChange={(e) => setExtension(e.target.value)}
-								placeholder="e.g., pdf, jpg, txt"
+								placeholder="e.g., json, pdf, jpg, txt"
 								style={inputStyle}
 							/>
 							<button onClick={filterFiles} style={buttonStyle}>
