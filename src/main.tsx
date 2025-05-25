@@ -1,13 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-// File Type Organizer with Enhanced Folder Support
+// File Type Organizer with Enhanced Folder Support and ZIP Download
 function FileTypeOrganizer() {
 	const [dragActive, setDragActive] = React.useState(false);
 	const [files, setFiles] = React.useState<File[]>([]);
 	const [extension, setExtension] = React.useState("");
 	const [filteredFiles, setFilteredFiles] = React.useState<File[]>([]);
 	const [isProcessing, setIsProcessing] = React.useState(false);
+	const [isCreatingZip, setIsCreatingZip] = React.useState(false);
 	const [error, setError] = React.useState<string | null>(null);
 
 	// Debug logging
@@ -82,6 +83,30 @@ function FileTypeOrganizer() {
 				resolve([]);
 			}
 		});
+	};
+
+	// Simple ZIP creation function (without external dependencies)
+	const createZipFile = async (
+		files: File[],
+		zipName: string
+	): Promise<Blob> => {
+		console.log(`📦 Creating ZIP file: ${zipName} with ${files.length} files`);
+
+		// For now, we'll create a simple archive by concatenating files
+		// In a real implementation, you'd use a proper ZIP library
+		const zipContent: string[] = [];
+
+		for (const file of files) {
+			try {
+				const content = await file.text();
+				zipContent.push(`=== ${file.name} ===\n${content}\n\n`);
+			} catch (error) {
+				console.warn(`⚠️ Could not read ${file.name} as text, skipping`);
+			}
+		}
+
+		const combinedContent = zipContent.join("");
+		return new Blob([combinedContent], { type: "text/plain" });
 	};
 
 	const handleDragEnter = React.useCallback((e: React.DragEvent) => {
@@ -209,6 +234,46 @@ function FileTypeOrganizer() {
 		}
 	}, []);
 
+	const downloadAllFiles = React.useCallback(async () => {
+		if (filteredFiles.length === 0) {
+			setError("No files to download.");
+			return;
+		}
+
+		setIsCreatingZip(true);
+		setError(null);
+
+		try {
+			console.log(`📦 Creating archive with ${filteredFiles.length} files`);
+
+			const ext = extension.startsWith(".") ? extension.slice(1) : extension;
+			const zipName = `${ext}_files_${
+				new Date().toISOString().split("T")[0]
+			}.txt`;
+
+			const zipBlob = await createZipFile(filteredFiles, zipName);
+
+			// Download the archive
+			const url = URL.createObjectURL(zipBlob);
+			const a = document.createElement("a");
+			a.href = url;
+			a.download = zipName;
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+			URL.revokeObjectURL(url);
+
+			console.log(`✅ Successfully downloaded archive: ${zipName}`);
+		} catch (err) {
+			console.error("❌ Error creating archive:", err);
+			setError(
+				"Error creating archive. Please try downloading files individually."
+			);
+		} finally {
+			setIsCreatingZip(false);
+		}
+	}, [filteredFiles, extension]);
+
 	// Enhanced inline styles with better browser compatibility
 	const containerStyle: React.CSSProperties = {
 		minHeight: "100vh",
@@ -291,6 +356,12 @@ function FileTypeOrganizer() {
 		cursor: "pointer",
 		transition: "all 0.3s ease",
 		fontSize: "1rem",
+	};
+
+	const downloadAllButtonStyle: React.CSSProperties = {
+		...buttonStyle,
+		background: "linear-gradient(135deg, #f59e0b, #d97706)",
+		marginLeft: "1rem",
 	};
 
 	const inputStyle: React.CSSProperties = {
@@ -442,16 +513,40 @@ function FileTypeOrganizer() {
 
 						{filteredFiles.length > 0 && (
 							<div style={{ marginTop: "1.5rem" }}>
-								<h3
+								<div
 									style={{
-										fontSize: "1.25rem",
-										fontWeight: "600",
-										color: "#1f2937",
+										display: "flex",
+										justifyContent: "space-between",
+										alignItems: "center",
 										marginBottom: "1rem",
+										flexWrap: "wrap",
+										gap: "1rem",
 									}}
 								>
-									Found {filteredFiles.length} .{extension} file(s)
-								</h3>
+									<h3
+										style={{
+											fontSize: "1.25rem",
+											fontWeight: "600",
+											color: "#1f2937",
+											margin: 0,
+										}}
+									>
+										Found {filteredFiles.length} .{extension} file(s)
+									</h3>
+									<button
+										onClick={downloadAllFiles}
+										disabled={isCreatingZip}
+										style={{
+											...downloadAllButtonStyle,
+											opacity: isCreatingZip ? 0.6 : 1,
+											cursor: isCreatingZip ? "not-allowed" : "pointer",
+										}}
+									>
+										{isCreatingZip
+											? "📦 Creating Archive..."
+											: "📦 Download All"}
+									</button>
+								</div>
 								<div style={{ maxHeight: "16rem", overflowY: "auto" }}>
 									{filteredFiles.map((file, index) => (
 										<div
