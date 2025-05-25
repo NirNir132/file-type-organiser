@@ -484,11 +484,13 @@ function FileTypeOrganizer() {
 		display: "flex",
 		flexDirection: "column",
 		alignItems: "center",
-		padding: "3rem 1rem",
+		justifyContent: "flex-start",
+		padding: "clamp(2rem, 5vw, 4rem) 1rem",
 		fontFamily:
 			"system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
 		margin: 0,
 		boxSizing: "border-box",
+		width: "100%",
 	};
 
 	const titleStyle: React.CSSProperties = {
@@ -506,16 +508,15 @@ function FileTypeOrganizer() {
 	const subtitleStyle: React.CSSProperties = {
 		fontSize: "1.125rem",
 		color: "#475569",
-		maxWidth: "32rem",
 		textAlign: "center",
-		marginBottom: "3rem",
+		margin: "0 auto 3rem auto",
 		lineHeight: 1.6,
+		maxWidth: "42rem",
 	};
 
 	const dropZoneStyle: React.CSSProperties = {
 		width: "100%",
-		maxWidth: "32rem",
-		padding: "3rem",
+		padding: "clamp(3rem, 6vw, 4rem) clamp(1.5rem, 4vw, 2rem)",
 		border: dragActive ? "2px solid #0ea5e9" : "2px dashed #94a3b8",
 		borderRadius: "1rem",
 		textAlign: "center",
@@ -526,7 +527,6 @@ function FileTypeOrganizer() {
 			? "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 4px rgba(14, 165, 233, 0.3)"
 			: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
 		transform: dragActive ? "scale(1.02)" : "scale(1)",
-		marginBottom: "2rem",
 	};
 
 	const iconStyle: React.CSSProperties = {
@@ -539,12 +539,10 @@ function FileTypeOrganizer() {
 
 	const cardStyle: React.CSSProperties = {
 		width: "100%",
-		maxWidth: "32rem",
-		padding: "1.5rem",
+		padding: "2rem",
 		backgroundColor: "#ffffff",
 		borderRadius: "1rem",
 		boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-		marginBottom: "2rem",
 		border: "1px solid rgba(0, 0, 0, 0.05)",
 	};
 
@@ -578,7 +576,14 @@ function FileTypeOrganizer() {
 
 	return (
 		<div style={containerStyle}>
-			<header>
+			<header
+				style={{
+					width: "100%",
+					maxWidth: "48rem",
+					textAlign: "center",
+					marginBottom: "2rem",
+				}}
+			>
 				<h1 style={titleStyle}>Extract Files by Type Online</h1>
 				<p style={subtitleStyle}>
 					Extract specific file types from folders instantly. Drag & drop files
@@ -591,9 +596,11 @@ function FileTypeOrganizer() {
 			<main
 				style={{
 					width: "100%",
+					maxWidth: "48rem",
 					display: "flex",
 					flexDirection: "column",
 					alignItems: "center",
+					gap: "2rem",
 				}}
 			>
 				{error && (
@@ -810,8 +817,8 @@ function FileTypeOrganizer() {
 
 			<footer
 				style={{
-					marginTop: "5rem",
-					paddingTop: "2.5rem",
+					marginTop: "4rem",
+					paddingTop: "3rem",
 					borderTop: "1px solid #d1d5db",
 					width: "100%",
 					maxWidth: "48rem",
