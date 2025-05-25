@@ -1,8 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
 
-// Clean File Type Organizer Component
+// File Type Organizer with Inline Styles
 function FileTypeOrganizer() {
 	const [dragActive, setDragActive] = React.useState(false);
 	const [files, setFiles] = React.useState<File[]>([]);
@@ -91,21 +90,118 @@ function FileTypeOrganizer() {
 		}
 	}, []);
 
+	// Inline styles for guaranteed rendering
+	const containerStyle: React.CSSProperties = {
+		minHeight: "100vh",
+		background:
+			"linear-gradient(135deg, #e0f2fe 0%, #e8eaf6 50%, #f3e5f5 100%)",
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "center",
+		padding: "3rem 1rem",
+		fontFamily: "system-ui, -apple-system, sans-serif",
+	};
+
+	const titleStyle: React.CSSProperties = {
+		fontSize: "3rem",
+		fontWeight: "800",
+		background: "linear-gradient(135deg, #0284c7, #4338ca, #7c3aed)",
+		WebkitBackgroundClip: "text",
+		WebkitTextFillColor: "transparent",
+		backgroundClip: "text",
+		marginBottom: "1rem",
+		textAlign: "center",
+	};
+
+	const subtitleStyle: React.CSSProperties = {
+		fontSize: "1.125rem",
+		color: "#475569",
+		maxWidth: "32rem",
+		textAlign: "center",
+		marginBottom: "3rem",
+	};
+
+	const dropZoneStyle: React.CSSProperties = {
+		width: "100%",
+		maxWidth: "32rem",
+		padding: "3rem",
+		border: dragActive ? "2px solid #0ea5e9" : "2px dashed #94a3b8",
+		borderRadius: "1rem",
+		textAlign: "center",
+		cursor: "pointer",
+		transition: "all 0.3s ease",
+		backgroundColor: dragActive ? "#e0f2fe" : "#ffffff",
+		boxShadow: dragActive
+			? "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
+			: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+		transform: dragActive ? "scale(1.05)" : "scale(1)",
+		marginBottom: "2rem",
+	};
+
+	const iconStyle: React.CSSProperties = {
+		width: "3rem",
+		height: "3rem",
+		color: "#94a3b8",
+		marginBottom: "1rem",
+	};
+
+	const cardStyle: React.CSSProperties = {
+		width: "100%",
+		maxWidth: "32rem",
+		padding: "1.5rem",
+		backgroundColor: "#ffffff",
+		borderRadius: "1rem",
+		boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+		marginBottom: "2rem",
+	};
+
+	const buttonStyle: React.CSSProperties = {
+		padding: "0.75rem 1.5rem",
+		background: "linear-gradient(135deg, #0ea5e9, #4338ca)",
+		color: "white",
+		border: "none",
+		borderRadius: "0.5rem",
+		fontWeight: "600",
+		cursor: "pointer",
+		transition: "all 0.3s ease",
+	};
+
+	const inputStyle: React.CSSProperties = {
+		flex: 1,
+		padding: "0.75rem 1rem",
+		border: "1px solid #d1d5db",
+		borderRadius: "0.5rem",
+		fontSize: "1rem",
+		outline: "none",
+	};
+
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-sky-100 via-indigo-50 to-purple-50 flex flex-col items-center py-12 px-4">
-			<header className="mb-12 text-center">
-				<h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-indigo-600 to-purple-700 mb-3">
-					File Type Organizer
-				</h1>
-				<p className="text-lg text-slate-700 max-w-2xl mx-auto">
+		<div style={containerStyle}>
+			<header>
+				<h1 style={titleStyle}>File Type Organizer</h1>
+				<p style={subtitleStyle}>
 					Effortlessly drag & drop files, specify a file type, and instantly
 					download your organized files.
 				</p>
 			</header>
 
-			<main className="w-full max-w-2xl space-y-8">
+			<main
+				style={{
+					width: "100%",
+					display: "flex",
+					flexDirection: "column",
+					alignItems: "center",
+				}}
+			>
 				{error && (
-					<div className="p-4 text-sm text-red-800 bg-red-100 rounded-xl border border-red-300 shadow-lg">
+					<div
+						style={{
+							...cardStyle,
+							backgroundColor: "#fef2f2",
+							color: "#991b1b",
+							border: "1px solid #fecaca",
+						}}
+					>
 						<strong>Error:</strong> {error}
 					</div>
 				)}
@@ -115,15 +211,18 @@ function FileTypeOrganizer() {
 					onDragLeave={handleDragLeave}
 					onDragOver={handleDragOver}
 					onDrop={handleDrop}
-					className={`w-full p-12 border-2 rounded-2xl text-center cursor-pointer transition-all duration-300 ${
-						dragActive
-							? "border-solid border-sky-500 bg-sky-100 ring-4 ring-sky-500 shadow-2xl scale-105"
-							: "border-dashed border-slate-400 bg-white hover:border-sky-500 hover:bg-sky-50 shadow-xl"
-					}`}
+					style={dropZoneStyle}
 				>
-					<div className="flex flex-col items-center space-y-4">
+					<div
+						style={{
+							display: "flex",
+							flexDirection: "column",
+							alignItems: "center",
+							gap: "1rem",
+						}}
+					>
 						<svg
-							className="w-12 h-12 text-slate-400"
+							style={iconStyle}
 							fill="none"
 							stroke="currentColor"
 							viewBox="0 0 24 24"
@@ -135,69 +234,125 @@ function FileTypeOrganizer() {
 								d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
 							/>
 						</svg>
-						<p className="text-xl font-semibold text-slate-700">
+						<p
+							style={{
+								fontSize: "1.25rem",
+								fontWeight: "600",
+								color: "#374151",
+								margin: 0,
+							}}
+						>
 							{dragActive ? "Release to Scan Files!" : "Drag & Drop Files Here"}
 						</p>
-						<p className="text-sm text-slate-500">
+						<p style={{ fontSize: "0.875rem", color: "#6b7280", margin: 0 }}>
 							Drop your files and we'll help you organize them by type.
 						</p>
 					</div>
 				</div>
 
 				{isProcessing && (
-					<div className="text-center p-8 bg-white rounded-2xl shadow-2xl">
-						<div className="animate-spin w-8 h-8 border-4 border-sky-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-						<p className="text-slate-700">Processing files...</p>
+					<div style={cardStyle}>
+						<div style={{ textAlign: "center" }}>
+							<div
+								style={{
+									width: "2rem",
+									height: "2rem",
+									border: "4px solid #e5e7eb",
+									borderTop: "4px solid #0ea5e9",
+									borderRadius: "50%",
+									animation: "spin 1s linear infinite",
+									margin: "0 auto 1rem",
+								}}
+							></div>
+							<p style={{ color: "#374151", margin: 0 }}>Processing files...</p>
+						</div>
 					</div>
 				)}
 
 				{files.length > 0 && !isProcessing && (
-					<div className="p-6 bg-white rounded-2xl shadow-2xl">
-						<h2 className="text-2xl font-semibold text-slate-800 mb-4">
+					<div style={cardStyle}>
+						<h2
+							style={{
+								fontSize: "1.5rem",
+								fontWeight: "600",
+								color: "#1f2937",
+								marginBottom: "1rem",
+							}}
+						>
 							Filter Your Files
 						</h2>
-						<p className="text-slate-600 mb-4">
+						<p style={{ color: "#6b7280", marginBottom: "1rem" }}>
 							Found {files.length} files. Enter a file extension to filter:
 						</p>
 
-						<div className="flex gap-4 mb-4">
+						<div style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
 							<input
 								type="text"
 								value={extension}
 								onChange={(e) => setExtension(e.target.value)}
 								placeholder="e.g., pdf, jpg, txt"
-								className="flex-1 px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+								style={inputStyle}
 							/>
-							<button
-								onClick={filterFiles}
-								className="px-6 py-3 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
-							>
+							<button onClick={filterFiles} style={buttonStyle}>
 								Filter
 							</button>
 						</div>
 
 						{filteredFiles.length > 0 && (
-							<div className="mt-6">
-								<h3 className="text-xl font-semibold text-slate-800 mb-4">
+							<div style={{ marginTop: "1.5rem" }}>
+								<h3
+									style={{
+										fontSize: "1.25rem",
+										fontWeight: "600",
+										color: "#1f2937",
+										marginBottom: "1rem",
+									}}
+								>
 									Found {filteredFiles.length} .{extension} file(s)
 								</h3>
-								<div className="max-h-64 overflow-y-auto space-y-2">
+								<div style={{ maxHeight: "16rem", overflowY: "auto" }}>
 									{filteredFiles.map((file, index) => (
 										<div
 											key={index}
-											className="p-3 bg-slate-50 rounded-lg flex justify-between items-center"
+											style={{
+												padding: "0.75rem",
+												backgroundColor: "#f8fafc",
+												borderRadius: "0.5rem",
+												display: "flex",
+												justifyContent: "space-between",
+												alignItems: "center",
+												marginBottom: "0.5rem",
+											}}
 										>
-											<div className="flex-1">
-												<span className="text-sm font-medium text-slate-800">
+											<div>
+												<span
+													style={{
+														fontSize: "0.875rem",
+														fontWeight: "500",
+														color: "#1f2937",
+													}}
+												>
 													{file.name}
 												</span>
-												<span className="text-xs text-slate-500 ml-2">
+												<span
+													style={{
+														fontSize: "0.75rem",
+														color: "#6b7280",
+														marginLeft: "0.5rem",
+													}}
+												>
 													{(file.size / 1024).toFixed(1)} KB
 												</span>
 											</div>
 											<button
 												onClick={() => downloadFile(file)}
-												className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-semibold rounded-lg hover:shadow-lg transition-all"
+												style={{
+													...buttonStyle,
+													padding: "0.5rem 1rem",
+													fontSize: "0.875rem",
+													background:
+														"linear-gradient(135deg, #10b981, #059669)",
+												}}
 											>
 												Download
 											</button>
@@ -210,12 +365,36 @@ function FileTypeOrganizer() {
 				)}
 			</main>
 
-			<footer className="mt-20 pt-10 border-t border-slate-300 w-full max-w-3xl text-center text-sm text-slate-600">
+			<footer
+				style={{
+					marginTop: "5rem",
+					paddingTop: "2.5rem",
+					borderTop: "1px solid #d1d5db",
+					width: "100%",
+					maxWidth: "48rem",
+					textAlign: "center",
+					fontSize: "0.875rem",
+					color: "#6b7280",
+				}}
+			>
 				<p>&copy; 2025 File Organizer App. All rights reserved.</p>
-				<p className="text-xs text-slate-500 mt-1">
-					Crafted with React, Tailwind CSS, and a sprinkle of innovation.
+				<p
+					style={{
+						fontSize: "0.75rem",
+						color: "#9ca3af",
+						marginTop: "0.25rem",
+					}}
+				>
+					Crafted with React and a sprinkle of innovation.
 				</p>
 			</footer>
+
+			<style>{`
+				@keyframes spin {
+					0% { transform: rotate(0deg); }
+					100% { transform: rotate(360deg); }
+				}
+			`}</style>
 		</div>
 	);
 }
