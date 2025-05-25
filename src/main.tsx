@@ -131,28 +131,36 @@ function FileTypeOrganizer() {
 		});
 	};
 
-	// Simple ZIP creation function (without external dependencies)
-	const createZipFile = async (
-		files: File[],
-		zipName: string
-	): Promise<Blob> => {
-		console.log(`📦 Creating ZIP file: ${zipName} with ${files.length} files`);
+	// Download all files individually (better than a single text file)
+	const downloadAllFilesIndividually = async (files: File[]) => {
+		console.log(`📦 Downloading ${files.length} files individually...`);
 
-		// For now, we'll create a simple archive by concatenating files
-		// In a real implementation, you'd use a proper ZIP library
-		const zipContent: string[] = [];
-
-		for (const file of files) {
+		for (let i = 0; i < files.length; i++) {
+			const file = files[i];
 			try {
-				const content = await file.text();
-				zipContent.push(`=== ${file.name} ===\n${content}\n\n`);
+				console.log(`⬇️ Downloading ${i + 1}/${files.length}: ${file.name}`);
+
+				// Create download link
+				const url = URL.createObjectURL(file);
+				const a = document.createElement("a");
+				a.href = url;
+				a.download = file.name;
+				a.style.display = "none";
+				document.body.appendChild(a);
+				a.click();
+				document.body.removeChild(a);
+				URL.revokeObjectURL(url);
+
+				// Small delay between downloads to prevent browser blocking
+				if (i < files.length - 1) {
+					await new Promise((resolve) => setTimeout(resolve, 100));
+				}
 			} catch (error) {
-				console.warn(`⚠️ Could not read ${file.name} as text, skipping`);
+				console.error(`❌ Error downloading ${file.name}:`, error);
 			}
 		}
 
-		const combinedContent = zipContent.join("");
-		return new Blob([combinedContent], { type: "text/plain" });
+		console.log(`✅ Completed downloading all ${files.length} files`);
 	};
 
 	const dragCounter = React.useRef(0);
@@ -306,35 +314,20 @@ function FileTypeOrganizer() {
 		setError(null);
 
 		try {
-			console.log(`📦 Creating archive with ${filteredFiles.length} files`);
-
-			const ext = extension.startsWith(".") ? extension.slice(1) : extension;
-			const zipName = `${ext}_files_${
-				new Date().toISOString().split("T")[0]
-			}.txt`;
-
-			const zipBlob = await createZipFile(filteredFiles, zipName);
-
-			// Download the archive
-			const url = URL.createObjectURL(zipBlob);
-			const a = document.createElement("a");
-			a.href = url;
-			a.download = zipName;
-			document.body.appendChild(a);
-			a.click();
-			document.body.removeChild(a);
-			URL.revokeObjectURL(url);
-
-			console.log(`✅ Successfully downloaded archive: ${zipName}`);
+			console.log(`📦 Starting download of ${filteredFiles.length} files`);
+			await downloadAllFilesIndividually(filteredFiles);
+			console.log(
+				`✅ Successfully downloaded all ${filteredFiles.length} files`
+			);
 		} catch (err) {
-			console.error("❌ Error creating archive:", err);
+			console.error("❌ Error downloading files:", err);
 			setError(
-				"Error creating archive. Please try downloading files individually."
+				"Error downloading files. Please try downloading files individually."
 			);
 		} finally {
 			setIsCreatingZip(false);
 		}
-	}, [filteredFiles, extension]);
+	}, [filteredFiles]);
 
 	// Enhanced inline styles with better browser compatibility
 	const containerStyle: React.CSSProperties = {
@@ -611,8 +604,8 @@ function FileTypeOrganizer() {
 											}}
 										>
 											{isCreatingZip
-												? "📦 Creating Archive..."
-												: "📦 Download All"}
+												? "⬇️ Downloading Files..."
+												: "⬇️ Download All Files"}
 										</button>
 									</div>
 								</div>
