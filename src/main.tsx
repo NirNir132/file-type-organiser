@@ -1,45 +1,60 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import App from "./App";
 import "./index.css";
 
-// Simple test component to check if React is working
-const TestApp = () => {
-	return (
-		<div className="min-h-screen bg-gradient-to-br from-sky-100 via-indigo-50 to-purple-50 flex items-center justify-center">
-			<div className="text-center p-8 bg-white/80 backdrop-blur-md shadow-2xl rounded-2xl">
-				<h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-indigo-600 to-purple-700 mb-4">
-					File Type Organizer
-				</h1>
-				<p className="text-slate-700 mb-4">
-					React is working! Loading the full app...
-				</p>
-				<div className="w-full p-8 border-2 border-dashed border-slate-400/70 bg-white/70 backdrop-blur-sm rounded-2xl">
-					<div className="flex flex-col items-center space-y-4">
-						<svg
-							className="w-20 h-20 text-slate-400"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
+// Error Boundary Component
+class ErrorBoundary extends React.Component<
+	{ children: React.ReactNode },
+	{ hasError: boolean; error?: Error }
+> {
+	constructor(props: { children: React.ReactNode }) {
+		super(props);
+		this.state = { hasError: false };
+	}
+
+	static getDerivedStateFromError(error: Error) {
+		return { hasError: true, error };
+	}
+
+	componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+		console.error("React Error Boundary caught an error:", error, errorInfo);
+	}
+
+	render() {
+		if (this.state.hasError) {
+			return (
+				<div className="min-h-screen bg-gradient-to-br from-sky-100 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
+					<div className="text-center p-8 bg-white/80 backdrop-blur-md shadow-2xl rounded-2xl max-w-md">
+						<h1 className="text-2xl font-bold text-red-600 mb-4">
+							Something went wrong
+						</h1>
+						<p className="text-slate-700 mb-4">
+							The app encountered an error. This might be due to browser
+							extensions or other conflicts.
+						</p>
+						<button
+							onClick={() => window.location.reload()}
+							className="px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors"
 						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={1.5}
-								d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-							/>
-						</svg>
-						<p className="text-lg font-semibold text-slate-700">
-							Drag & Drop Folder Here
-						</p>
-						<p className="text-sm text-slate-500">
-							We'll scan its contents, including subfolders, to find your files.
-						</p>
+							Reload Page
+						</button>
+						<details className="mt-4 text-left">
+							<summary className="cursor-pointer text-sm text-slate-500">
+								Error Details
+							</summary>
+							<pre className="text-xs text-red-600 mt-2 overflow-auto">
+								{this.state.error?.toString()}
+							</pre>
+						</details>
 					</div>
 				</div>
-			</div>
-		</div>
-	);
-};
+			);
+		}
+
+		return this.props.children;
+	}
+}
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {
@@ -48,6 +63,23 @@ if (!rootElement) {
 		'<div style="color: red; text-align: center; padding: 2rem;">Root element not found</div>';
 } else {
 	console.log("Root element found, rendering React app...");
-	const root = ReactDOM.createRoot(rootElement);
-	root.render(<TestApp />);
+	try {
+		const root = ReactDOM.createRoot(rootElement);
+		root.render(
+			<ErrorBoundary>
+				<App />
+			</ErrorBoundary>
+		);
+	} catch (error) {
+		console.error("Failed to render React app:", error);
+		rootElement.innerHTML = `
+			<div style="color: red; text-align: center; padding: 2rem; font-family: system-ui;">
+				<h2>Failed to load the application</h2>
+				<p>There was an error loading the React app. Please try refreshing the page.</p>
+				<button onclick="window.location.reload()" style="padding: 8px 16px; background: #0ea5e9; color: white; border: none; border-radius: 4px; cursor: pointer;">
+					Reload Page
+				</button>
+			</div>
+		`;
+	}
 }
