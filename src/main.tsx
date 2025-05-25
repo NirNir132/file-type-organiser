@@ -13,9 +13,10 @@ function FileTypeOrganizer() {
 
 	// Debug logging
 	React.useEffect(() => {
-		console.log("🎨 File Type Organizer loaded with inline styles");
+		console.log("🎨 File Type Organizer v2.1 loaded with ZIP support");
 		console.log("📍 Current URL:", window.location.href);
 		console.log("🔧 React version:", React.version);
+		console.log("📦 ZIP functionality enabled");
 	}, []);
 
 	// Enhanced drag and drop sensitivity with document-level event handling
@@ -434,24 +435,37 @@ function FileTypeOrganizer() {
 			console.log(`📦 Creating ZIP with ${filteredFiles.length} files`);
 
 			const ext = extension.startsWith(".") ? extension.slice(1) : extension;
-			const zipName = `${ext}_files_${
-				new Date().toISOString().split("T")[0]
-			}.zip`;
+			const timestamp = new Date()
+				.toISOString()
+				.replace(/[:.]/g, "-")
+				.split("T")[0];
+			const zipName = `${ext}_files_${timestamp}.zip`;
+
+			console.log(`🔧 ZIP filename will be: ${zipName}`);
 
 			const zipBlob = await createZipFile(filteredFiles, zipName);
 
-			// Download the ZIP file
+			console.log(
+				`📦 ZIP blob created - Size: ${zipBlob.size} bytes, Type: ${zipBlob.type}`
+			);
+
+			// Download the ZIP file with cache busting
 			const url = URL.createObjectURL(zipBlob);
 			const a = document.createElement("a");
 			a.href = url;
 			a.download = zipName;
 			a.style.display = "none";
+
+			// Force download attribute and add cache busting
+			a.setAttribute("download", zipName);
+			a.setAttribute("type", "application/zip");
+
 			document.body.appendChild(a);
 			a.click();
 			document.body.removeChild(a);
 			URL.revokeObjectURL(url);
 
-			console.log(`✅ Successfully downloaded ZIP: ${zipName}`);
+			console.log(`✅ Successfully triggered download of ZIP: ${zipName}`);
 		} catch (err) {
 			console.error("❌ Error creating ZIP:", err);
 			setError(
@@ -568,7 +582,7 @@ function FileTypeOrganizer() {
 				<h1 style={titleStyle}>File Type Organizer</h1>
 				<p style={subtitleStyle}>
 					Effortlessly drag & drop files or folders, specify a file type, and
-					instantly download your organized files.
+					instantly download your organized files as a ZIP archive.
 				</p>
 			</header>
 
