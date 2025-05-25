@@ -9,6 +9,6 @@ export default defineConfig({
 			"@": path.resolve(__dirname, "./src"),
 		},
 	},
-	// Set base for GitHub Pages deployment
-	base: "/file-type-organiser/",
+	// Set base path: root for custom domain, subdirectory for GitHub Pages
+	base: process.env.NODE_ENV === "production" ? "/" : "/file-type-organiser/",
 });
