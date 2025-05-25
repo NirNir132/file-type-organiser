@@ -22,11 +22,18 @@ function FileTypeOrganizer() {
 	React.useEffect(() => {
 		const handleDocumentDragOver = (e: DragEvent) => {
 			e.preventDefault();
+			// Keep drag active while dragging over document
+			if (e.dataTransfer && e.dataTransfer.types.includes("Files")) {
+				setDragActive(true);
+			}
 		};
 
 		const handleDocumentDragLeave = (e: DragEvent) => {
-			// Only reset if we're leaving the entire document
-			if (e.clientX === 0 && e.clientY === 0) {
+			// Only reset if we're truly leaving the document area
+			if (
+				!e.relatedTarget ||
+				(e.relatedTarget as Element).nodeName === "HTML"
+			) {
 				dragCounter.current = 0;
 				setDragActive(false);
 			}
@@ -38,11 +45,19 @@ function FileTypeOrganizer() {
 			setDragActive(false);
 		};
 
+		// Prevent default drag behavior on the entire document
+		const preventDefaults = (e: DragEvent) => {
+			e.preventDefault();
+			e.stopPropagation();
+		};
+
+		document.addEventListener("dragenter", preventDefaults);
 		document.addEventListener("dragover", handleDocumentDragOver);
 		document.addEventListener("dragleave", handleDocumentDragLeave);
 		document.addEventListener("drop", handleDocumentDrop);
 
 		return () => {
+			document.removeEventListener("dragenter", preventDefaults);
 			document.removeEventListener("dragover", handleDocumentDragOver);
 			document.removeEventListener("dragleave", handleDocumentDragLeave);
 			document.removeEventListener("drop", handleDocumentDrop);
@@ -146,7 +161,7 @@ function FileTypeOrganizer() {
 		e.preventDefault();
 		e.stopPropagation();
 		dragCounter.current++;
-		if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+		if (e.dataTransfer && e.dataTransfer.types.includes("Files")) {
 			setDragActive(true);
 			console.log("📥 Drag enter detected");
 		}
@@ -156,15 +171,19 @@ function FileTypeOrganizer() {
 		e.preventDefault();
 		e.stopPropagation();
 		dragCounter.current--;
-		if (dragCounter.current === 0) {
-			setDragActive(false);
-		}
+		// Use a small delay to prevent flickering
+		setTimeout(() => {
+			if (dragCounter.current <= 0) {
+				dragCounter.current = 0;
+				setDragActive(false);
+			}
+		}, 50);
 	}, []);
 
 	const handleDragOver = React.useCallback((e: React.DragEvent) => {
 		e.preventDefault();
 		e.stopPropagation();
-		if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+		if (e.dataTransfer && e.dataTransfer.types.includes("Files")) {
 			setDragActive(true);
 		}
 	}, []);
@@ -556,39 +575,46 @@ function FileTypeOrganizer() {
 
 						{filteredFiles.length > 0 && (
 							<div style={{ marginTop: "1.5rem" }}>
-								<div
-									style={{
-										display: "flex",
-										justifyContent: "space-between",
-										alignItems: "center",
-										marginBottom: "1rem",
-										flexWrap: "wrap",
-										gap: "1rem",
-									}}
-								>
-									<h3
+								<div style={{ marginBottom: "1rem" }}>
+									<div
 										style={{
-											fontSize: "1.25rem",
-											fontWeight: "600",
-											color: "#1f2937",
-											margin: 0,
+											display: "flex",
+											justifyContent: "space-between",
+											alignItems: "flex-start",
+											marginBottom: "1rem",
+											flexWrap: "wrap",
+											gap: "1rem",
 										}}
 									>
-										Found {filteredFiles.length} .{extension} file(s)
-									</h3>
-									<button
-										onClick={downloadAllFiles}
-										disabled={isCreatingZip}
-										style={{
-											...downloadAllButtonStyle,
-											opacity: isCreatingZip ? 0.6 : 1,
-											cursor: isCreatingZip ? "not-allowed" : "pointer",
-										}}
-									>
-										{isCreatingZip
-											? "📦 Creating Archive..."
-											: "📦 Download All"}
-									</button>
+										<h3
+											style={{
+												fontSize: "1.25rem",
+												fontWeight: "600",
+												color: "#1f2937",
+												margin: 0,
+												flex: "1 1 auto",
+												minWidth: "200px",
+											}}
+										>
+											Found {filteredFiles.length} .{extension} file(s)
+										</h3>
+										<button
+											onClick={downloadAllFiles}
+											disabled={isCreatingZip}
+											style={{
+												...downloadAllButtonStyle,
+												opacity: isCreatingZip ? 0.6 : 1,
+												cursor: isCreatingZip ? "not-allowed" : "pointer",
+												marginLeft: 0,
+												flexShrink: 0,
+												whiteSpace: "nowrap",
+											}}
+										>
+											{isCreatingZip
+												? "📦 Creating Archive..."
+												: "📦 Download All"}
+										</button>
+									</div>
 								</div>
 								<div style={{ maxHeight: "16rem", overflowY: "auto" }}>
 									{filteredFiles.map((file, index) => (
