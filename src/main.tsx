@@ -18,6 +18,37 @@ function FileTypeOrganizer() {
 		console.log("🔧 React version:", React.version);
 	}, []);
 
+	// Enhanced drag and drop sensitivity with document-level event handling
+	React.useEffect(() => {
+		const handleDocumentDragOver = (e: DragEvent) => {
+			e.preventDefault();
+		};
+
+		const handleDocumentDragLeave = (e: DragEvent) => {
+			// Only reset if we're leaving the entire document
+			if (e.clientX === 0 && e.clientY === 0) {
+				dragCounter.current = 0;
+				setDragActive(false);
+			}
+		};
+
+		const handleDocumentDrop = (e: DragEvent) => {
+			e.preventDefault();
+			dragCounter.current = 0;
+			setDragActive(false);
+		};
+
+		document.addEventListener("dragover", handleDocumentDragOver);
+		document.addEventListener("dragleave", handleDocumentDragLeave);
+		document.addEventListener("drop", handleDocumentDrop);
+
+		return () => {
+			document.removeEventListener("dragover", handleDocumentDragOver);
+			document.removeEventListener("dragleave", handleDocumentDragLeave);
+			document.removeEventListener("drop", handleDocumentDrop);
+		};
+	}, []);
+
 	// Helper function to recursively process directory entries
 	const processDirectoryEntry = async (
 		entry: FileSystemEntry
@@ -109,27 +140,39 @@ function FileTypeOrganizer() {
 		return new Blob([combinedContent], { type: "text/plain" });
 	};
 
+	const dragCounter = React.useRef(0);
+
 	const handleDragEnter = React.useCallback((e: React.DragEvent) => {
 		e.preventDefault();
 		e.stopPropagation();
-		setDragActive(true);
-		console.log("📥 Drag enter detected");
+		dragCounter.current++;
+		if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+			setDragActive(true);
+			console.log("📥 Drag enter detected");
+		}
 	}, []);
 
 	const handleDragLeave = React.useCallback((e: React.DragEvent) => {
 		e.preventDefault();
 		e.stopPropagation();
-		setDragActive(false);
+		dragCounter.current--;
+		if (dragCounter.current === 0) {
+			setDragActive(false);
+		}
 	}, []);
 
 	const handleDragOver = React.useCallback((e: React.DragEvent) => {
 		e.preventDefault();
 		e.stopPropagation();
+		if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+			setDragActive(true);
+		}
 	}, []);
 
 	const handleDrop = React.useCallback(async (e: React.DragEvent) => {
 		e.preventDefault();
 		e.stopPropagation();
+		dragCounter.current = 0;
 		setDragActive(false);
 		setError(null);
 
