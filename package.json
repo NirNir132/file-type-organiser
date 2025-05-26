@@ -9,6 +9,8 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
+		"@types/jszip": "^3.4.1",
+		"jszip": "^3.10.1",
 		"lucide-react": "^0.511.0",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0"

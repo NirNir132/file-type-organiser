@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import JSZip from "jszip";
 
 // File Type Organizer with Enhanced Folder Support and ZIP Download
 function FileTypeOrganizer() {
@@ -132,153 +133,50 @@ function FileTypeOrganizer() {
 		});
 	};
 
-	// Create a proper ZIP file using browser-native APIs
+	// Create a proper ZIP file using JSZip library
 	const createZipFile = async (
 		files: File[],
 		zipName: string
 	): Promise<Blob> => {
 		console.log(`📦 Creating ZIP file: ${zipName} with ${files.length} files`);
 
-		// Simple ZIP file structure implementation
-		const zipData: Uint8Array[] = [];
-		const centralDirectory: Uint8Array[] = [];
-		let offset = 0;
+		const zip = new JSZip();
 
-		const encoder = new TextEncoder();
-
+		// Add each file to the ZIP
 		for (const file of files) {
 			try {
-				const fileData = new Uint8Array(await file.arrayBuffer());
-				const fileName = encoder.encode(file.name);
+				console.log(
+					`✅ Adding ${file.name} to ZIP (${(file.size / 1024).toFixed(1)} KB)`
+				);
 
-				// Local file header
-				const localHeader = new Uint8Array(30 + fileName.length);
-				const view = new DataView(localHeader.buffer);
+				// Read file as ArrayBuffer to preserve binary data integrity
+				const arrayBuffer = await file.arrayBuffer();
 
-				// Local file header signature
-				view.setUint32(0, 0x04034b50, true);
-				// Version needed to extract
-				view.setUint16(4, 20, true);
-				// General purpose bit flag
-				view.setUint16(6, 0, true);
-				// Compression method (0 = no compression)
-				view.setUint16(8, 0, true);
-				// File last modification time
-				view.setUint16(10, 0, true);
-				// File last modification date
-				view.setUint16(12, 0, true);
-				// CRC-32 (simplified - using 0)
-				view.setUint32(14, 0, true);
-				// Compressed size
-				view.setUint32(18, fileData.length, true);
-				// Uncompressed size
-				view.setUint32(22, fileData.length, true);
-				// File name length
-				view.setUint16(26, fileName.length, true);
-				// Extra field length
-				view.setUint16(28, 0, true);
-
-				// Copy filename
-				localHeader.set(fileName, 30);
-
-				zipData.push(localHeader);
-				zipData.push(fileData);
-
-				// Central directory entry
-				const centralEntry = new Uint8Array(46 + fileName.length);
-				const centralView = new DataView(centralEntry.buffer);
-
-				// Central directory signature
-				centralView.setUint32(0, 0x02014b50, true);
-				// Version made by
-				centralView.setUint16(4, 20, true);
-				// Version needed to extract
-				centralView.setUint16(6, 20, true);
-				// General purpose bit flag
-				centralView.setUint16(8, 0, true);
-				// Compression method
-				centralView.setUint16(10, 0, true);
-				// File last modification time
-				centralView.setUint16(12, 0, true);
-				// File last modification date
-				centralView.setUint16(14, 0, true);
-				// CRC-32
-				centralView.setUint32(16, 0, true);
-				// Compressed size
-				centralView.setUint32(20, fileData.length, true);
-				// Uncompressed size
-				centralView.setUint32(24, fileData.length, true);
-				// File name length
-				centralView.setUint16(28, fileName.length, true);
-				// Extra field length
-				centralView.setUint16(30, 0, true);
-				// File comment length
-				centralView.setUint16(32, 0, true);
-				// Disk number start
-				centralView.setUint16(34, 0, true);
-				// Internal file attributes
-				centralView.setUint16(36, 0, true);
-				// External file attributes
-				centralView.setUint32(38, 0, true);
-				// Relative offset of local header
-				centralView.setUint32(42, offset, true);
-
-				// Copy filename
-				centralEntry.set(fileName, 46);
-				centralDirectory.push(centralEntry);
-
-				offset += localHeader.length + fileData.length;
-
-				console.log(`✅ Added ${file.name} to ZIP`);
+				// Add file to ZIP with original filename and data
+				zip.file(file.name, arrayBuffer);
 			} catch (error) {
 				console.warn(`⚠️ Could not add ${file.name} to ZIP:`, error);
 			}
 		}
 
-		// End of central directory record
-		const centralDirSize = centralDirectory.reduce(
-			(sum, entry) => sum + entry.length,
-			0
+		console.log(`🔧 Generating ZIP file...`);
+
+		// Generate the ZIP file as a Blob with proper compression
+		const zipBlob = await zip.generateAsync({
+			type: "blob",
+			compression: "DEFLATE",
+			compressionOptions: {
+				level: 6, // Good balance between compression and speed
+			},
+		});
+
+		console.log(
+			`✅ ZIP file generated successfully - Size: ${(
+				zipBlob.size / 1024
+			).toFixed(1)} KB`
 		);
-		const endRecord = new Uint8Array(22);
-		const endView = new DataView(endRecord.buffer);
 
-		// End of central directory signature
-		endView.setUint32(0, 0x06054b50, true);
-		// Number of this disk
-		endView.setUint16(4, 0, true);
-		// Disk where central directory starts
-		endView.setUint16(6, 0, true);
-		// Number of central directory records on this disk
-		endView.setUint16(8, files.length, true);
-		// Total number of central directory records
-		endView.setUint16(10, files.length, true);
-		// Size of central directory
-		endView.setUint32(12, centralDirSize, true);
-		// Offset of start of central directory
-		endView.setUint32(16, offset, true);
-		// ZIP file comment length
-		endView.setUint16(20, 0, true);
-
-		// Combine all parts
-		const totalSize =
-			zipData.reduce((sum, chunk) => sum + chunk.length, 0) +
-			centralDirSize +
-			endRecord.length;
-		const result = new Uint8Array(totalSize);
-
-		let pos = 0;
-		for (const chunk of zipData) {
-			result.set(chunk, pos);
-			pos += chunk.length;
-		}
-		for (const entry of centralDirectory) {
-			result.set(entry, pos);
-			pos += entry.length;
-		}
-		result.set(endRecord, pos);
-
-		return new Blob([result], { type: "application/zip" });
+		return zipBlob;
 	};
 
 	const dragCounter = React.useRef(0);
