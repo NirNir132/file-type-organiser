@@ -1286,6 +1286,131 @@ function FileTypeOrganizer() {
 				</div>
 			</section>
 
+			{/* Related Pages Section */}
+			<section
+				style={{
+					...cardStyle,
+					marginTop: "2rem",
+					width: "100%",
+					maxWidth: "48rem",
+				}}
+			>
+				<h2
+					style={{
+						fontSize: "1.75rem",
+						fontWeight: "700",
+						color: "#1f2937",
+						marginBottom: "1.5rem",
+						textAlign: "center",
+					}}
+				>
+					Popular File Extraction Guides
+				</h2>
+				<div
+					style={{
+						display: "grid",
+						gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+						gap: "1.5rem",
+					}}
+				>
+					<div
+						style={{
+							textAlign: "center",
+							padding: "1.5rem",
+							background: "#f8fafc",
+							borderRadius: "0.5rem",
+							border: "1px solid #e5e7eb",
+						}}
+					>
+						<div style={{ fontSize: "2rem", marginBottom: "1rem" }}>📄</div>
+						<h3
+							style={{
+								fontSize: "1.125rem",
+								fontWeight: "600",
+								color: "#1f2937",
+								marginBottom: "0.5rem",
+							}}
+						>
+							<a
+								href="/how-to-extract-pdf-files.html"
+								style={{ color: "#1f2937", textDecoration: "none" }}
+							>
+								Extract PDF Files
+							</a>
+						</h3>
+						<p
+							style={{
+								color: "#6b7280",
+								fontSize: "0.875rem",
+								lineHeight: "1.5",
+								marginBottom: "1rem",
+							}}
+						>
+							Complete guide to extracting PDF documents from folders and
+							archives
+						</p>
+						<a
+							href="/how-to-extract-pdf-files.html"
+							style={{
+								color: "#0ea5e9",
+								fontSize: "0.875rem",
+								fontWeight: "500",
+								textDecoration: "none",
+							}}
+						>
+							Learn More →
+						</a>
+					</div>
+					<div
+						style={{
+							textAlign: "center",
+							padding: "1.5rem",
+							background: "#f8fafc",
+							borderRadius: "0.5rem",
+							border: "1px solid #e5e7eb",
+						}}
+					>
+						<div style={{ fontSize: "2rem", marginBottom: "1rem" }}>🖼️</div>
+						<h3
+							style={{
+								fontSize: "1.125rem",
+								fontWeight: "600",
+								color: "#1f2937",
+								marginBottom: "0.5rem",
+							}}
+						>
+							<a
+								href="/organize-photos-by-type.html"
+								style={{ color: "#1f2937", textDecoration: "none" }}
+							>
+								Organize Photos
+							</a>
+						</h3>
+						<p
+							style={{
+								color: "#6b7280",
+								fontSize: "0.875rem",
+								lineHeight: "1.5",
+								marginBottom: "1rem",
+							}}
+						>
+							Sort and extract JPG, PNG, GIF images from your photo collections
+						</p>
+						<a
+							href="/organize-photos-by-type.html"
+							style={{
+								color: "#0ea5e9",
+								fontSize: "0.875rem",
+								fontWeight: "500",
+								textDecoration: "none",
+							}}
+						>
+							Learn More →
+						</a>
+					</div>
+				</div>
+			</section>
+
 			<footer
 				style={{
 					marginTop: "4rem",
