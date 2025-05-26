@@ -44,8 +44,20 @@ jobs:
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
+        timeout-minutes: 10
+        continue-on-error: true
+        id: upload-attempt-1
         with:
           path: ./dist
+          retention-days: 1 # Reduce retention since this is just for deployment
+
+      - name: Retry Upload on Failure
+        uses: actions/upload-pages-artifact@v3
+        if: steps.upload-attempt-1.outcome == 'failure'
+        timeout-minutes: 10
+        with:
+          path: ./dist
+          retention-days: 1
 
       - name: Deploy to GitHub Pages
         id: deployment
