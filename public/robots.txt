@@ -5,4 +5,7 @@ Allow: /
 Sitemap: https://organisefiles.live/sitemap.xml
 
 # Crawl-delay for polite crawling
-Crawl-delay: 1 
+Crawl-delay: 1
+
+# Allow indexing of all content
+Disallow: 

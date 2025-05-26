@@ -815,6 +815,477 @@ function FileTypeOrganizer() {
 				)}
 			</main>
 
+			{/* Features Section */}
+			<section
+				style={{
+					...cardStyle,
+					marginTop: "3rem",
+					width: "100%",
+					maxWidth: "48rem",
+				}}
+			>
+				<h2
+					style={{
+						fontSize: "1.75rem",
+						fontWeight: "700",
+						color: "#1f2937",
+						marginBottom: "1.5rem",
+						textAlign: "center",
+					}}
+				>
+					Why Choose OrganiseFiles?
+				</h2>
+				<div
+					style={{
+						display: "grid",
+						gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+						gap: "1.5rem",
+					}}
+				>
+					<div style={{ textAlign: "center", padding: "1rem" }}>
+						<div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>🆓</div>
+						<h3
+							style={{
+								fontSize: "1.125rem",
+								fontWeight: "600",
+								color: "#1f2937",
+								marginBottom: "0.5rem",
+							}}
+						>
+							100% Free
+						</h3>
+						<p
+							style={{
+								color: "#6b7280",
+								fontSize: "0.875rem",
+								lineHeight: "1.5",
+							}}
+						>
+							No registration or downloads required
+						</p>
+					</div>
+					<div style={{ textAlign: "center", padding: "1rem" }}>
+						<div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>🔒</div>
+						<h3
+							style={{
+								fontSize: "1.125rem",
+								fontWeight: "600",
+								color: "#1f2937",
+								marginBottom: "0.5rem",
+							}}
+						>
+							Secure
+						</h3>
+						<p
+							style={{
+								color: "#6b7280",
+								fontSize: "0.875rem",
+								lineHeight: "1.5",
+							}}
+						>
+							Files processed in your browser, never uploaded to servers
+						</p>
+					</div>
+					<div style={{ textAlign: "center", padding: "1rem" }}>
+						<div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>⚡</div>
+						<h3
+							style={{
+								fontSize: "1.125rem",
+								fontWeight: "600",
+								color: "#1f2937",
+								marginBottom: "0.5rem",
+							}}
+						>
+							Fast
+						</h3>
+						<p
+							style={{
+								color: "#6b7280",
+								fontSize: "0.875rem",
+								lineHeight: "1.5",
+							}}
+						>
+							Instant file extraction and sorting
+						</p>
+					</div>
+					<div style={{ textAlign: "center", padding: "1rem" }}>
+						<div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>♾️</div>
+						<h3
+							style={{
+								fontSize: "1.125rem",
+								fontWeight: "600",
+								color: "#1f2937",
+								marginBottom: "0.5rem",
+							}}
+						>
+							Unlimited
+						</h3>
+						<p
+							style={{
+								color: "#6b7280",
+								fontSize: "0.875rem",
+								lineHeight: "1.5",
+							}}
+						>
+							No file size or quantity limits
+						</p>
+					</div>
+					<div style={{ textAlign: "center", padding: "1rem" }}>
+						<div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📁</div>
+						<h3
+							style={{
+								fontSize: "1.125rem",
+								fontWeight: "600",
+								color: "#1f2937",
+								marginBottom: "0.5rem",
+							}}
+						>
+							All Formats
+						</h3>
+						<p
+							style={{
+								color: "#6b7280",
+								fontSize: "0.875rem",
+								lineHeight: "1.5",
+							}}
+						>
+							PDF, DOCX, JPG, PNG, MP4, ZIP, and 50+ more
+						</p>
+					</div>
+				</div>
+			</section>
+
+			{/* How it Works Section */}
+			<section
+				style={{
+					...cardStyle,
+					marginTop: "2rem",
+					width: "100%",
+					maxWidth: "48rem",
+				}}
+			>
+				<h2
+					style={{
+						fontSize: "1.75rem",
+						fontWeight: "700",
+						color: "#1f2937",
+						marginBottom: "1.5rem",
+						textAlign: "center",
+					}}
+				>
+					How to Extract Files by Type
+				</h2>
+				<div
+					style={{
+						display: "grid",
+						gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+						gap: "1.5rem",
+					}}
+				>
+					<div
+						style={{ display: "flex", alignItems: "flex-start", gap: "1rem" }}
+					>
+						<div
+							style={{
+								backgroundColor: "#dbeafe",
+								color: "#1e40af",
+								width: "2rem",
+								height: "2rem",
+								borderRadius: "50%",
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								fontWeight: "600",
+								flexShrink: 0,
+							}}
+						>
+							1
+						</div>
+						<div>
+							<h3
+								style={{
+									fontSize: "1.125rem",
+									fontWeight: "600",
+									color: "#1f2937",
+									marginBottom: "0.5rem",
+								}}
+							>
+								Drag & Drop
+							</h3>
+							<p
+								style={{
+									color: "#6b7280",
+									fontSize: "0.875rem",
+									lineHeight: "1.5",
+								}}
+							>
+								Drag and drop your files or folders into the upload area
+							</p>
+						</div>
+					</div>
+					<div
+						style={{ display: "flex", alignItems: "flex-start", gap: "1rem" }}
+					>
+						<div
+							style={{
+								backgroundColor: "#dbeafe",
+								color: "#1e40af",
+								width: "2rem",
+								height: "2rem",
+								borderRadius: "50%",
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								fontWeight: "600",
+								flexShrink: 0,
+							}}
+						>
+							2
+						</div>
+						<div>
+							<h3
+								style={{
+									fontSize: "1.125rem",
+									fontWeight: "600",
+									color: "#1f2937",
+									marginBottom: "0.5rem",
+								}}
+							>
+								Enter Extension
+							</h3>
+							<p
+								style={{
+									color: "#6b7280",
+									fontSize: "0.875rem",
+									lineHeight: "1.5",
+								}}
+							>
+								Type the file extension you want (pdf, jpg, docx, etc.)
+							</p>
+						</div>
+					</div>
+					<div
+						style={{ display: "flex", alignItems: "flex-start", gap: "1rem" }}
+					>
+						<div
+							style={{
+								backgroundColor: "#dbeafe",
+								color: "#1e40af",
+								width: "2rem",
+								height: "2rem",
+								borderRadius: "50%",
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								fontWeight: "600",
+								flexShrink: 0,
+							}}
+						>
+							3
+						</div>
+						<div>
+							<h3
+								style={{
+									fontSize: "1.125rem",
+									fontWeight: "600",
+									color: "#1f2937",
+									marginBottom: "0.5rem",
+								}}
+							>
+								Extract Files
+							</h3>
+							<p
+								style={{
+									color: "#6b7280",
+									fontSize: "0.875rem",
+									lineHeight: "1.5",
+								}}
+							>
+								Click "Filter" to find all matching files instantly
+							</p>
+						</div>
+					</div>
+					<div
+						style={{ display: "flex", alignItems: "flex-start", gap: "1rem" }}
+					>
+						<div
+							style={{
+								backgroundColor: "#dbeafe",
+								color: "#1e40af",
+								width: "2rem",
+								height: "2rem",
+								borderRadius: "50%",
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								fontWeight: "600",
+								flexShrink: 0,
+							}}
+						>
+							4
+						</div>
+						<div>
+							<h3
+								style={{
+									fontSize: "1.125rem",
+									fontWeight: "600",
+									color: "#1f2937",
+									marginBottom: "0.5rem",
+								}}
+							>
+								Download ZIP
+							</h3>
+							<p
+								style={{
+									color: "#6b7280",
+									fontSize: "0.875rem",
+									lineHeight: "1.5",
+								}}
+							>
+								Download your organized files as a ZIP archive
+							</p>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			{/* FAQ Section */}
+			<section
+				style={{
+					...cardStyle,
+					marginTop: "2rem",
+					width: "100%",
+					maxWidth: "48rem",
+				}}
+			>
+				<h2
+					style={{
+						fontSize: "1.75rem",
+						fontWeight: "700",
+						color: "#1f2937",
+						marginBottom: "1.5rem",
+						textAlign: "center",
+					}}
+				>
+					Frequently Asked Questions
+				</h2>
+				<div
+					style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
+				>
+					<div>
+						<h3
+							style={{
+								fontSize: "1.125rem",
+								fontWeight: "600",
+								color: "#1f2937",
+								marginBottom: "0.5rem",
+							}}
+						>
+							What file types can I extract?
+						</h3>
+						<p
+							style={{
+								color: "#6b7280",
+								fontSize: "0.875rem",
+								lineHeight: "1.6",
+							}}
+						>
+							Extract any file type including PDF, Word documents (DOCX), Excel
+							files (XLSX), images (JPG, PNG, GIF), videos (MP4, AVI, MOV),
+							audio files (MP3, WAV), text files (TXT), and many more.
+						</p>
+					</div>
+					<div>
+						<h3
+							style={{
+								fontSize: "1.125rem",
+								fontWeight: "600",
+								color: "#1f2937",
+								marginBottom: "0.5rem",
+							}}
+						>
+							Is it free to use?
+						</h3>
+						<p
+							style={{
+								color: "#6b7280",
+								fontSize: "0.875rem",
+								lineHeight: "1.6",
+							}}
+						>
+							Yes, OrganiseFiles is completely free. No registration, no
+							downloads, no hidden fees.
+						</p>
+					</div>
+					<div>
+						<h3
+							style={{
+								fontSize: "1.125rem",
+								fontWeight: "600",
+								color: "#1f2937",
+								marginBottom: "0.5rem",
+							}}
+						>
+							Are my files secure?
+						</h3>
+						<p
+							style={{
+								color: "#6b7280",
+								fontSize: "0.875rem",
+								lineHeight: "1.6",
+							}}
+						>
+							Absolutely. All file processing happens in your browser. Your
+							files are never uploaded to our servers.
+						</p>
+					</div>
+					<div>
+						<h3
+							style={{
+								fontSize: "1.125rem",
+								fontWeight: "600",
+								color: "#1f2937",
+								marginBottom: "0.5rem",
+							}}
+						>
+							Is there a file size limit?
+						</h3>
+						<p
+							style={{
+								color: "#6b7280",
+								fontSize: "0.875rem",
+								lineHeight: "1.6",
+							}}
+						>
+							No, you can process folders with unlimited file sizes and
+							quantities.
+						</p>
+					</div>
+					<div>
+						<h3
+							style={{
+								fontSize: "1.125rem",
+								fontWeight: "600",
+								color: "#1f2937",
+								marginBottom: "0.5rem",
+							}}
+						>
+							Can I extract from nested folders?
+						</h3>
+						<p
+							style={{
+								color: "#6b7280",
+								fontSize: "0.875rem",
+								lineHeight: "1.6",
+							}}
+						>
+							Yes, our tool works with nested folder structures and extracts
+							files from all subdirectories.
+						</p>
+					</div>
+				</div>
+			</section>
+
 			<footer
 				style={{
 					marginTop: "4rem",
