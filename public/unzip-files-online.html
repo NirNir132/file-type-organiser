@@ -165,12 +165,27 @@
 				font-weight: 600;
 				margin: 1.5rem 0 0.5rem 0;
 			}
-			.step {
+			.feature-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+				gap: 1.5rem;
+				margin: 2rem 0;
+			}
+			.feature-card {
+				/* Adapted from other guides */
+				background: #f8fafc; /* Light gray, can be adjusted */
+				padding: 2rem;
+				border-radius: 0.5rem;
+				text-align: center;
+				border: 1px solid #e5e7eb; /* Light border */
+			}
+			.step-card {
+				/* Similar to doc-type-card or feature-card */
 				background: #f8fafc;
 				padding: 1.5rem;
 				border-radius: 0.5rem;
 				margin: 1rem 0;
-				border-left: 4px solid #0ea5e9;
+				border-left: 4px solid #2563eb; /* Blue accent line */
 			}
 			.cta-button {
 				display: inline-block;
@@ -197,327 +212,251 @@
 				text-decoration: none;
 			}
 		</style>
-		<script src="https://cdn.tailwindcss.com"></script>
-		<script>
-			tailwind.config = {
-				theme: {
-					extend: {
-						colors: {
-							primary: "#3B82F6",
-							secondary: "#1E40AF",
-						},
-					},
-				},
-			};
-		</script>
 	</head>
-	<body class="bg-gray-50">
-		<!-- Breadcrumb Navigation -->
-		<nav class="bg-white border-b border-gray-200 px-4 py-2">
-			<div class="max-w-7xl mx-auto">
-				<ol class="flex items-center space-x-2 text-sm text-gray-600">
-					<li><a href="/" class="hover:text-primary">Home</a></li>
-					<li class="flex items-center">
-						<svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
-							<path
-								d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-							></path>
-						</svg>
-					</li>
-					<li class="text-gray-900 font-medium">Unzip Files Online</li>
-				</ol>
-			</div>
-		</nav>
+	<body>
+		<div class="container">
+			<nav class="breadcrumb"><a href="/">Home</a> → Unzip Files Online</nav>
 
-		<div class="max-w-7xl mx-auto px-4 py-8">
-			<!-- Header -->
-			<header class="text-center mb-12">
-				<h1 class="text-4xl font-bold text-gray-900 mb-4">
-					Unzip Files Online Free
-				</h1>
-				<p class="text-xl text-gray-600 max-w-3xl mx-auto">
-					Extract ZIP files online without installing software. Fast, secure,
-					and unlimited ZIP extraction with support for password-protected
-					archives.
+			<h1>Unzip Files Online Free</h1>
+			<p>
+				Extract ZIP files online without installing software. Fast, secure, and
+				unlimited ZIP extraction with support for password-protected archives.
+			</p>
+
+			<a href="/" class="cta-button">Unzip Your Files Now →</a>
+
+			<h2>How to Unzip Files Online</h2>
+			<div class="feature-grid">
+				<div class="feature-card">
+					<h3>1. Upload ZIP File</h3>
+					<p>
+						Select your ZIP archive from computer, cloud storage, or drag & drop
+						into the browser.
+					</p>
+				</div>
+				<div class="feature-card">
+					<h3>2. Extract Contents</h3>
+					<p>
+						Our ZIP extractor automatically processes and extracts all files
+						from your archive.
+					</p>
+				</div>
+				<div class="feature-card">
+					<h3>3. Download Files</h3>
+					<p>
+						Download individual files or get all extracted content in a new
+						organized folder.
+					</p>
+				</div>
+			</div>
+
+			<h2>ZIP Extractor Features</h2>
+			<div class="feature-grid">
+				<div class="feature-card">
+					<div style="font-size: 2.5rem; margin-bottom: 1rem">🚫</div>
+					<h3>No Software Required</h3>
+					<p>
+						Extract ZIP files directly in your browser without installing
+						WinZip, 7-Zip, or any other software.
+					</p>
+				</div>
+				<div class="feature-card">
+					<div style="font-size: 2.5rem; margin-bottom: 1rem">🔒</div>
+					<h3>Password-Protected ZIP</h3>
+					<p>
+						Extract password-protected ZIP files and encrypted archives securely
+						online.
+					</p>
+				</div>
+				<div class="feature-card">
+					<div style="font-size: 2.5rem; margin-bottom: 1rem">⚡</div>
+					<h3>Fast Extraction</h3>
+					<p>
+						Lightning-fast ZIP extraction with advanced compression algorithms
+						for optimal performance.
+					</p>
+				</div>
+				<div class="feature-card">
+					<div style="font-size: 2.5rem; margin-bottom: 1rem">🌍</div>
+					<h3>Any Device, Anywhere</h3>
+					<p>
+						Works on Windows, Mac, Linux, Android, and iOS. All you need is a
+						browser.
+					</p>
+				</div>
+				<div class="feature-card">
+					<div style="font-size: 2.5rem; margin-bottom: 1rem">♾️</div>
+					<h3>Unlimited & Free</h3>
+					<p>
+						No limits on file size or the number of files you can extract.
+						Completely free.
+					</p>
+				</div>
+				<div class="feature-card">
+					<div style="font-size: 2.5rem; margin-bottom: 1rem">🛡️</div>
+					<h3>Secure & Private</h3>
+					<p>
+						Files are processed in your browser and never uploaded to our
+						servers.
+					</p>
+				</div>
+			</div>
+
+			<h2>Supported Archive Formats</h2>
+			<div class="feature-grid">
+				<div class="feature-card">
+					<div
+						style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem"
+					>
+						ZIP
+					</div>
+					<p>Standard ZIP archives</p>
+				</div>
+				<div class="feature-card">
+					<div
+						style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem"
+					>
+						ZIPX
+					</div>
+					<p>Extended ZIP format</p>
+				</div>
+				<div class="feature-card">
+					<div
+						style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem"
+					>
+						JAR
+					</div>
+					<p>Java Archive files</p>
+				</div>
+				<div class="feature-card">
+					<div
+						style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem"
+					>
+						APK
+					</div>
+					<p>Android Package files</p>
+				</div>
+			</div>
+
+			<h2>Frequently Asked Questions</h2>
+			<div class="step-card">
+				<h3>Is this ZIP extractor free to use?</h3>
+				<p>
+					Yes, our online ZIP extractor is completely free with no file size
+					limits or usage restrictions.
 				</p>
-			</header>
-
-			<!-- CTA Section -->
-			<div class="text-center mb-12">
-				<a
-					href="/"
-					class="inline-flex items-center px-8 py-4 bg-primary text-white text-lg font-semibold rounded-lg hover:bg-secondary transition-colors"
-				>
-					Unzip Files Now
-					<svg
-						class="w-5 h-5 ml-2"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M13 7l5 5m0 0l-5 5m5-5H6"
-						></path>
-					</svg>
-				</a>
+			</div>
+			<div class="step-card">
+				<h3>Can I extract password-protected ZIP files?</h3>
+				<p>
+					Yes, simply enter the password when prompted by your browser or system
+					(if the main app supports it) and our tool will help organize the
+					extracted files.
+				</p>
+			</div>
+			<div class="step-card">
+				<h3>Is it safe to unzip files online?</h3>
+				<p>
+					Absolutely. All files are processed securely within your browser if
+					using our main application. These guide pages do not handle files.
+				</p>
+			</div>
+			<div class="step-card">
+				<h3>What's the maximum ZIP file size?</h3>
+				<p>
+					There's no file size limit when using our main application. Extract
+					small ZIP files or large archives up to several GB in size.
+				</p>
 			</div>
 
-			<!-- Features Grid -->
-			<section class="mb-16">
-				<h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
-					ZIP Extractor Features
-				</h2>
-				<div class="grid md:grid-cols-3 gap-8">
-					<div class="bg-white p-6 rounded-lg shadow-md">
-						<div
-							class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4"
+			<h2>Related Archive Tools</h2>
+			<div class="feature-grid">
+				<div class="feature-card">
+					<h3>
+						<a
+							href="/rar-extractor-online.html"
+							style="color: #1f2937; text-decoration: none"
+							>RAR Extractor Online</a
 						>
-							<svg
-								class="w-6 h-6 text-white"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"
-								></path>
-							</svg>
-						</div>
-						<h3 class="text-xl font-semibold mb-2">No Software Required</h3>
-						<p class="text-gray-600">
-							Extract ZIP files directly in your browser without installing
-							WinZip, 7-Zip, or any other software.
-						</p>
-					</div>
-					<div class="bg-white p-6 rounded-lg shadow-md">
-						<div
-							class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4"
-						>
-							<svg
-								class="w-6 h-6 text-white"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-								></path>
-							</svg>
-						</div>
-						<h3 class="text-xl font-semibold mb-2">Password-Protected ZIP</h3>
-						<p class="text-gray-600">
-							Extract password-protected ZIP files and encrypted archives
-							securely online.
-						</p>
-					</div>
-					<div class="bg-white p-6 rounded-lg shadow-md">
-						<div
-							class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4"
-						>
-							<svg
-								class="w-6 h-6 text-white"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M13 10V3L4 14h7v7l9-11h-7z"
-								></path>
-							</svg>
-						</div>
-						<h3 class="text-xl font-semibold mb-2">Fast Extraction</h3>
-						<p class="text-gray-600">
-							Lightning-fast ZIP extraction with advanced compression algorithms
-							for optimal performance.
-						</p>
-					</div>
-				</div>
-			</section>
-
-			<!-- How It Works -->
-			<section class="mb-16">
-				<h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
-					How to Unzip Files Online
-				</h2>
-				<div class="grid md:grid-cols-3 gap-8">
-					<div class="text-center">
-						<div
-							class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4"
-						>
-							<span class="text-white text-2xl font-bold">1</span>
-						</div>
-						<h3 class="text-lg font-semibold mb-2">Upload ZIP File</h3>
-						<p class="text-gray-600">
-							Select your ZIP archive from computer, cloud storage, or drag &
-							drop into the browser.
-						</p>
-					</div>
-					<div class="text-center">
-						<div
-							class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4"
-						>
-							<span class="text-white text-2xl font-bold">2</span>
-						</div>
-						<h3 class="text-lg font-semibold mb-2">Extract Contents</h3>
-						<p class="text-gray-600">
-							Our ZIP extractor automatically processes and extracts all files
-							from your archive.
-						</p>
-					</div>
-					<div class="text-center">
-						<div
-							class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4"
-						>
-							<span class="text-white text-2xl font-bold">3</span>
-						</div>
-						<h3 class="text-lg font-semibold mb-2">Download Files</h3>
-						<p class="text-gray-600">
-							Download individual files or get all extracted content in a new
-							organized folder.
-						</p>
-					</div>
-				</div>
-			</section>
-
-			<!-- Supported Formats -->
-			<section class="mb-16">
-				<h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
-					Supported Archive Formats
-				</h2>
-				<div class="bg-white p-8 rounded-lg shadow-md">
-					<div class="grid md:grid-cols-4 gap-6 text-center">
-						<div>
-							<div class="text-2xl font-bold text-primary mb-2">ZIP</div>
-							<p class="text-gray-600">Standard ZIP archives</p>
-						</div>
-						<div>
-							<div class="text-2xl font-bold text-primary mb-2">ZIPX</div>
-							<p class="text-gray-600">Extended ZIP format</p>
-						</div>
-						<div>
-							<div class="text-2xl font-bold text-primary mb-2">JAR</div>
-							<p class="text-gray-600">Java Archive files</p>
-						</div>
-						<div>
-							<div class="text-2xl font-bold text-primary mb-2">APK</div>
-							<p class="text-gray-600">Android Package files</p>
-						</div>
-					</div>
-				</div>
-			</section>
-
-			<!-- FAQ -->
-			<section class="mb-16">
-				<h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
-					ZIP Extractor FAQ
-				</h2>
-				<div class="space-y-6 max-w-4xl mx-auto">
-					<div class="bg-white p-6 rounded-lg shadow-md">
-						<h3 class="text-lg font-semibold mb-2">
-							Is this ZIP extractor free to use?
-						</h3>
-						<p class="text-gray-600">
-							Yes, our online ZIP extractor is completely free with no file size
-							limits or usage restrictions.
-						</p>
-					</div>
-					<div class="bg-white p-6 rounded-lg shadow-md">
-						<h3 class="text-lg font-semibold mb-2">
-							Can I extract password-protected ZIP files?
-						</h3>
-						<p class="text-gray-600">
-							Yes, simply enter the password when prompted and our tool will
-							extract the protected ZIP archive.
-						</p>
-					</div>
-					<div class="bg-white p-6 rounded-lg shadow-md">
-						<h3 class="text-lg font-semibold mb-2">
-							Is it safe to unzip files online?
-						</h3>
-						<p class="text-gray-600">
-							Absolutely. All files are processed securely with SSL encryption
-							and automatically deleted after extraction.
-						</p>
-					</div>
-					<div class="bg-white p-6 rounded-lg shadow-md">
-						<h3 class="text-lg font-semibold mb-2">
-							What's the maximum ZIP file size?
-						</h3>
-						<p class="text-gray-600">
-							There's no file size limit. Extract small ZIP files or large
-							archives up to several GB in size.
-						</p>
-					</div>
-				</div>
-			</section>
-
-			<!-- Related Tools -->
-			<section class="mb-16">
-				<h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
-					Related Archive Tools
-				</h2>
-				<div class="grid md:grid-cols-3 gap-6">
+					</h3>
+					<p>Extract RAR files and WinRAR archives online for free.</p>
 					<a
-						href="/rar-extractor-online"
-						class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
+						href="/rar-extractor-online.html"
+						style="
+							color: #0ea5e9;
+							font-size: 0.875rem;
+							font-weight: 500;
+							text-decoration: none;
+							display: block;
+							margin-top: 1rem;
+						"
+						>Learn More →</a
 					>
-						<h3 class="text-lg font-semibold mb-2">RAR Extractor Online</h3>
-						<p class="text-gray-600">
-							Extract RAR files and WinRAR archives online for free.
-						</p>
-					</a>
-					<a
-						href="/extract-documents-bulk"
-						class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
-					>
-						<h3 class="text-lg font-semibold mb-2">Bulk Document Extraction</h3>
-						<p class="text-gray-600">
-							Extract multiple archives and documents simultaneously.
-						</p>
-					</a>
-					<a
-						href="/how-to-extract-pdf-files"
-						class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
-					>
-						<h3 class="text-lg font-semibold mb-2">PDF Extraction Guide</h3>
-						<p class="text-gray-600">
-							Learn how to extract content and pages from PDF files.
-						</p>
-					</a>
 				</div>
-			</section>
+				<div class="feature-card">
+					<h3>
+						<a
+							href="/extract-documents-bulk.html"
+							style="color: #1f2937; text-decoration: none"
+							>Bulk Document Extraction</a
+						>
+					</h3>
+					<p>Extract multiple archives and documents simultaneously.</p>
+					<a
+						href="/extract-documents-bulk.html"
+						style="
+							color: #0ea5e9;
+							font-size: 0.875rem;
+							font-weight: 500;
+							text-decoration: none;
+							display: block;
+							margin-top: 1rem;
+						"
+						>Learn More →</a
+					>
+				</div>
+				<div class="feature-card">
+					<h3>
+						<a
+							href="/how-to-extract-pdf-files.html"
+							style="color: #1f2937; text-decoration: none"
+							>PDF Extraction Guide</a
+						>
+					</h3>
+					<p>Learn how to extract content and pages from PDF files.</p>
+					<a
+						href="/how-to-extract-pdf-files.html"
+						style="
+							color: #0ea5e9;
+							font-size: 0.875rem;
+							font-weight: 500;
+							text-decoration: none;
+							display: block;
+							margin-top: 1rem;
+						"
+						>Learn More →</a
+					>
+				</div>
+			</div>
+
+			<footer
+				style="
+					margin-top: 3rem;
+					padding-top: 2rem;
+					border-top: 1px solid #e5e7eb;
+					text-align: center;
+					color: #6b7280;
+					font-size: 0.875rem;
+				"
+			>
+				<p>
+					&copy; 2025 OrganiseFiles.live - Free Online ZIP Extractor. All rights
+					reserved.
+				</p>
+				<p>
+					<a href="/" style="color: #0ea5e9">← Back to File Organizer</a>
+				</p>
+			</footer>
 		</div>
-
-		<footer class="bg-gray-900 text-white py-8">
-			<div class="max-w-7xl mx-auto px-4 text-center">
-				<p>&copy; 2024 OrganiseFiles.live - Free Online ZIP Extractor</p>
-				<div class="mt-4 space-x-4">
-					<a href="/" class="text-gray-300 hover:text-white">Home</a>
-					<a href="/unzip-files-online" class="text-gray-300 hover:text-white"
-						>Unzip Files</a
-					>
-					<a href="/rar-extractor-online" class="text-gray-300 hover:text-white"
-						>RAR Extractor</a
-					>
-					<a
-						href="/extract-documents-bulk"
-						class="text-gray-300 hover:text-white"
-						>Bulk Extraction</a
-					>
-				</div>
-			</div>
-		</footer>
 	</body>
 </html>
