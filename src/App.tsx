@@ -181,8 +181,33 @@ const App: React.FC = () => {
 
 			<footer className="mt-20 pt-10 border-t border-slate-300/70 w-full max-w-3xl text-center text-sm text-slate-600/90">
 				<p>
-					&copy; {new Date().getFullYear()} File Organizer App. All rights
+					&copy; {new Date().getFullYear()} OrganiseFiles.live - All rights
 					reserved.
+				</p>
+				<p className="mt-2">
+					<a
+						href="/contact.html"
+						className="text-sky-600 hover:text-sky-700 hover:underline mx-2"
+					>
+						Contact & Support
+					</a>
+					|
+					<a
+						href="/terms.html"
+						className="text-sky-600 hover:text-sky-700 hover:underline mx-2"
+					>
+						Terms of Service
+					</a>
+					|
+					<a
+						href="/privacy.html"
+						className="text-sky-600 hover:text-sky-700 hover:underline mx-2"
+					>
+						Privacy Policy
+					</a>
+				</p>
+				<p className="text-xs text-slate-500/80 mt-3">
+					All file processing is done locally in your browser for your privacy.
 				</p>
 				<p className="text-xs text-slate-500/80 mt-1">
 					Crafted with React, Tailwind CSS, and a sprinkle of innovation.
