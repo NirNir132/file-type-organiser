@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="Complete guide to image file types: JPEG, PNG, SVG, GIF, WebP, TIFF, and more. Learn about image formats, compression, quality, and when to use each type."
+		/>
+		<meta
+			name="keywords"
+			content="image file types, JPEG vs PNG, SVG format, GIF images, WebP format, TIFF files, image compression, photo formats, graphics file types"
+		/>
+		<title>Image File Types Guide - JPEG, PNG, SVG, GIF & More</title>
+
+		<!-- Open Graph / Social Media Meta Tags -->
+		<meta property="og:type" content="website" />
+		<meta
+			property="og:title"
+			content="Image File Types Guide - JPEG, PNG, SVG, GIF & More"
+		/>
+		<meta
+			property="og:description"
+			content="Complete guide to image file types: JPEG, PNG, SVG, GIF, WebP, TIFF, and more. Learn when to use each format for web, print, and digital media."
+		/>
+		<meta
+			property="og:url"
+			content="https://organisefiles.live/file-types-images"
+		/>
+		<meta property="og:site_name" content="OrganiseFiles.live" />
+
+		<!-- Twitter Card Meta Tags -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta
+			name="twitter:title"
+			content="Image File Types Guide - JPEG, PNG, SVG, GIF & More"
+		/>
+		<meta
+			name="twitter:description"
+			content="Complete guide to image file types and when to use each format."
+		/>
+
+		<!-- Additional SEO Meta Tags -->
+		<meta name="author" content="OrganiseFiles" />
+		<meta name="robots" content="index, follow" />
+		<link rel="canonical" href="https://organisefiles.live/file-types-images" />
+
+		<!-- Google tag (gtag.js) -->
+		<script
+			async
+			src="https://www.googletagmanager.com/gtag/js?id=G-BT032RNJTT"
+		></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag("js", new Date());
+			gtag("config", "G-BT032RNJTT");
+		</script>
+
+		<link
+			rel="icon"
+			href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📁</text></svg>"
+		/>
+
+		<style>
+			body {
+				font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+					Roboto, sans-serif;
+				line-height: 1.7;
+				color: #374151;
+				max-width: 800px;
+				margin: 0 auto;
+				padding: 2rem;
+				background: linear-gradient(
+					135deg,
+					#e0f2fe 0%,
+					#e8eaf6 50%,
+					#f3e5f5 100%
+				);
+				min-height: 100vh;
+			}
+			.container {
+				background: white;
+				padding: 3rem;
+				border-radius: 1rem;
+				box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+			}
+			h1 {
+				color: #1f2937;
+				font-size: 2.5rem;
+				font-weight: 800;
+				margin-bottom: 1rem;
+				background: linear-gradient(135deg, #0284c7, #4338ca);
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				background-clip: text;
+			}
+			h2 {
+				color: #1f2937;
+				font-size: 1.75rem;
+				font-weight: 700;
+				margin: 2rem 0 1rem 0;
+			}
+			h3 {
+				color: #1f2937;
+				font-size: 1.25rem;
+				font-weight: 600;
+				margin: 1.5rem 0 0.5rem 0;
+			}
+			.breadcrumb {
+				font-size: 0.875rem;
+				color: #6b7280;
+				margin-bottom: 2rem;
+			}
+			.breadcrumb a {
+				color: #0ea5e9;
+				text-decoration: none;
+			}
+			.file-card {
+				background: #f8fafc;
+				padding: 2rem;
+				border-radius: 0.5rem;
+				margin: 2rem 0;
+				border-left: 4px solid #2563eb;
+			}
+			.file-header {
+				display: flex;
+				align-items: center;
+				margin-bottom: 1rem;
+			}
+			.file-icon {
+				font-size: 2.5rem;
+				margin-right: 1rem;
+			}
+			.file-title h3 {
+				margin: 0;
+				color: #1f2937;
+			}
+			.file-title p {
+				margin: 0;
+				color: #6b7280;
+				font-size: 0.9rem;
+			}
+			.facts-benefits {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 2rem;
+				margin: 1.5rem 0;
+			}
+			.facts,
+			.benefits {
+				background: white;
+				padding: 1.5rem;
+				border-radius: 0.5rem;
+				border: 1px solid #e5e7eb;
+			}
+			.facts h4,
+			.benefits h4 {
+				color: #1f2937;
+				margin-top: 0;
+			}
+			.facts {
+				border-left: 4px solid #10b981;
+			}
+			.benefits {
+				border-left: 4px solid #f59e0b;
+			}
+			.comparison-table {
+				width: 100%;
+				border-collapse: collapse;
+				margin: 2rem 0;
+			}
+			.comparison-table th,
+			.comparison-table td {
+				border: 1px solid #e5e7eb;
+				padding: 0.75rem;
+				text-align: left;
+			}
+			.comparison-table th {
+				background: #f3f4f6;
+				font-weight: 600;
+			}
+			.cta-button {
+				display: inline-block;
+				background: linear-gradient(135deg, #0ea5e9, #4338ca);
+				color: white;
+				padding: 1rem 2rem;
+				border-radius: 0.5rem;
+				text-decoration: none;
+				font-weight: 600;
+				margin: 2rem 0;
+				transition: all 0.3s ease;
+			}
+			.cta-button:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+			}
+			.use-case-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+				gap: 1.5rem;
+				margin: 2rem 0;
+			}
+			.use-case-card {
+				background: #fef3c7;
+				padding: 1.5rem;
+				border-radius: 0.5rem;
+				border: 1px solid #fbbf24;
+			}
+			@media (max-width: 768px) {
+				.facts-benefits {
+					grid-template-columns: 1fr;
+				}
+				.file-header {
+					flex-direction: column;
+					text-align: center;
+				}
+				.file-icon {
+					margin-right: 0;
+					margin-bottom: 1rem;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<nav class="breadcrumb">
+				<a href="/">Home</a> →
+				<a href="/file-encyclopedia.html">File Encyclopedia</a> → Image File
+				Types
+			</nav>
+
+			<h1>🖼️ Image File Types Guide</h1>
+
+			<p>
+				<strong>Master the world of digital image formats.</strong>
+				From web-optimized JPEG files to scalable SVG graphics, choosing the
+				right image format can dramatically impact file size, quality, and
+				compatibility. This comprehensive guide covers all major image file
+				types and when to use each one.
+			</p>
+
+			<h2>Essential Image File Formats</h2>
+
+			<div class="file-card">
+				<div class="file-header">
+					<div class="file-icon">📸</div>
+					<div class="file-title">
+						<h3>.jpg/.jpeg - Joint Photographic Experts Group</h3>
+						<p>The most popular photo format on the web</p>
+					</div>
+				</div>
+				<p>
+					JPEG, standing for Joint Photographic Experts Group, is one of the
+					most widely used image compression formats. Developed in 1992, it uses
+					lossy compression to significantly reduce file sizes while maintaining
+					acceptable image quality for most photographic content.
+				</p>
+				<div class="facts-benefits">
+					<div class="facts">
+						<h4>🎯 Cool Facts</h4>
+						<ul>
+							<li>
+								JPEG compression can reduce file sizes by up to 95% compared to
+								uncompressed images
+							</li>
+							<li>
+								The format was specifically designed for photographic images
+							</li>
+							<li>
+								JPEG is supported by virtually every device and web browser
+							</li>
+							<li>The compression algorithm analyzes 8x8 pixel blocks</li>
+						</ul>
+					</div>
+					<div class="benefits">
+						<h4>✨ Benefits</h4>
+						<ul>
+							<li>Excellent compression ratio for photographs</li>
+							<li>Universal support across all platforms</li>
+							<li>Adjustable quality settings</li>
+							<li>Perfect for photos with gradual color transitions</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div class="file-card">
+				<div class="file-header">
+					<div class="file-icon">🎨</div>
+					<div class="file-title">
+						<h3>.png - Portable Network Graphics</h3>
+						<p>Lossless compression with transparency support</p>
+					</div>
+				</div>
+				<p>
+					PNG (Portable Network Graphics) was developed in the mid-1990s as a
+					free, open-source successor to GIF. It offers lossless compression,
+					meaning no image data is lost during compression, and includes full
+					support for transparency, making it ideal for logos, icons, and
+					graphics with sharp edges.
+				</p>
+				<div class="facts-benefits">
+					<div class="facts">
+						<h4>🎯 Cool Facts</h4>
+						<ul>
+							<li>PNG was created to replace GIF and avoid patent issues</li>
+							<li>Supports up to 16.7 million colors plus transparency</li>
+							<li>Uses the DEFLATE compression algorithm</li>
+							<li>Can store metadata like text comments and color profiles</li>
+						</ul>
+					</div>
+					<div class="benefits">
+						<h4>✨ Benefits</h4>
+						<ul>
+							<li>Lossless compression preserves image quality</li>
+							<li>Full transparency support</li>
+							<li>Perfect for logos and graphics with sharp edges</li>
+							<li>Wide browser and software support</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div class="file-card">
+				<div class="file-header">
+					<div class="file-icon">📐</div>
+					<div class="file-title">
+						<h3>.svg - Scalable Vector Graphics</h3>
+						<p>Infinitely scalable vector graphics</p>
+					</div>
+				</div>
+				<p>
+					SVG (Scalable Vector Graphics) is a vector image format that uses XML
+					markup to define graphics through mathematical descriptions of shapes,
+					paths, and colors. Unlike raster formats, SVG images can be scaled to
+					any size without losing quality, making them perfect for responsive
+					web design and high-resolution displays.
+				</p>
+				<div class="facts-benefits">
+					<div class="facts">
+						<h4>🎯 Cool Facts</h4>
+						<ul>
+							<li>
+								SVG files are actually XML code that browsers interpret as
+								graphics
+							</li>
+							<li>
+								Can be styled with CSS and made interactive with JavaScript
+							</li>
+							<li>Became a W3C standard in 2001</li>
+							<li>Can include animations and interactive elements</li>
+						</ul>
+					</div>
+					<div class="benefits">
+						<h4>✨ Benefits</h4>
+						<ul>
+							<li>Infinitely scalable without quality loss</li>
+							<li>Very small file sizes for simple graphics</li>
+							<li>Can be styled with CSS</li>
+							<li>Perfect for icons and logos</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div class="file-card">
+				<div class="file-header">
+					<div class="file-icon">🎬</div>
+					<div class="file-title">
+						<h3>.gif - Graphics Interchange Format</h3>
+						<p>Animated images and simple graphics</p>
+					</div>
+				</div>
+				<p>
+					GIF (Graphics Interchange Format) was developed by CompuServe in 1987.
+					While limited to 256 colors, GIF's claim to fame is its support for
+					animation, making it the go-to format for simple animated images on
+					the web before video formats became more prevalent.
+				</p>
+				<div class="facts-benefits">
+					<div class="facts">
+						<h4>🎯 Cool Facts</h4>
+						<ul>
+							<li>The pronunciation debate: "gif" vs "jif" continues today</li>
+							<li>
+								GIF was the first widely-used image format to support animation
+							</li>
+							<li>Limited to 256 colors from a palette</li>
+							<li>Uses LZW compression algorithm</li>
+						</ul>
+					</div>
+					<div class="benefits">
+						<h4>✨ Benefits</h4>
+						<ul>
+							<li>Supports animation without plugins</li>
+							<li>Lossless compression for limited colors</li>
+							<li>Universal browser support</li>
+							<li>Small file sizes for simple graphics</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div class="file-card">
+				<div class="file-header">
+					<div class="file-icon">🚀</div>
+					<div class="file-title">
+						<h3>.webp - WebP Image Format</h3>
+						<p>Modern format with superior compression</p>
+					</div>
+				</div>
+				<p>
+					WebP is a modern image format developed by Google that provides
+					superior lossless and lossy compression for images on the web. It can
+					reduce file sizes by 25-50% compared to JPEG while maintaining similar
+					image quality, and supports transparency like PNG.
+				</p>
+				<div class="facts-benefits">
+					<div class="facts">
+						<h4>🎯 Cool Facts</h4>
+						<ul>
+							<li>Developed by Google and released in 2010</li>
+							<li>Can provide 25-50% better compression than JPEG</li>
+							<li>Supports both lossy and lossless compression</li>
+							<li>Can include transparency and animation</li>
+						</ul>
+					</div>
+					<div class="benefits">
+						<h4>✨ Benefits</h4>
+						<ul>
+							<li>Superior compression ratios</li>
+							<li>Supports transparency and animation</li>
+							<li>Faster website loading times</li>
+							<li>Growing browser support</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<h2>Image Format Comparison Chart</h2>
+			<table class="comparison-table">
+				<thead>
+					<tr>
+						<th>Format</th>
+						<th>Best For</th>
+						<th>Compression</th>
+						<th>Transparency</th>
+						<th>Animation</th>
+						<th>File Size</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><strong>JPEG</strong></td>
+						<td>Photographs</td>
+						<td>Lossy</td>
+						<td>No</td>
+						<td>No</td>
+						<td>Small</td>
+					</tr>
+					<tr>
+						<td><strong>PNG</strong></td>
+						<td>Graphics, logos</td>
+						<td>Lossless</td>
+						<td>Yes</td>
+						<td>No</td>
+						<td>Medium-Large</td>
+					</tr>
+					<tr>
+						<td><strong>SVG</strong></td>
+						<td>Icons, simple graphics</td>
+						<td>Vector</td>
+						<td>Yes</td>
+						<td>Yes</td>
+						<td>Very Small</td>
+					</tr>
+					<tr>
+						<td><strong>GIF</strong></td>
+						<td>Simple animations</td>
+						<td>Lossless</td>
+						<td>Yes (1-bit)</td>
+						<td>Yes</td>
+						<td>Small-Medium</td>
+					</tr>
+					<tr>
+						<td><strong>WebP</strong></td>
+						<td>Web images</td>
+						<td>Both</td>
+						<td>Yes</td>
+						<td>Yes</td>
+						<td>Very Small</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<h2>When to Use Each Image Format</h2>
+
+			<div class="use-case-grid">
+				<div class="use-case-card">
+					<h3>📸 For Photographs</h3>
+					<p>
+						<strong>Use JPEG</strong> for photos with many colors and gradual
+						transitions. Perfect for website photos, digital photography, and
+						situations where file size matters more than perfect quality.
+					</p>
+				</div>
+
+				<div class="use-case-card">
+					<h3>🎨 For Graphics & Logos</h3>
+					<p>
+						<strong>Use PNG</strong> for logos, icons, and graphics with sharp
+						edges. Essential when you need transparency or when image quality
+						must be preserved exactly.
+					</p>
+				</div>
+
+				<div class="use-case-card">
+					<h3>📐 For Scalable Graphics</h3>
+					<p>
+						<strong>Use SVG</strong> for icons, logos, and simple graphics that
+						need to scale perfectly at any size. Ideal for responsive web design
+						and high-DPI displays.
+					</p>
+				</div>
+
+				<div class="use-case-card">
+					<h3>🎬 For Simple Animations</h3>
+					<p>
+						<strong>Use GIF</strong> for simple animations, reaction images, and
+						graphics with limited colors. Great for quick, looping animations
+						that don't require video quality.
+					</p>
+				</div>
+
+				<div class="use-case-card">
+					<h3>🚀 For Modern Websites</h3>
+					<p>
+						<strong>Use WebP</strong> when you need the best compression ratios
+						and your audience uses modern browsers. Perfect for optimizing
+						website performance.
+					</p>
+				</div>
+
+				<div class="use-case-card">
+					<h3>🖨️ For Print Materials</h3>
+					<p>
+						<strong>Use TIFF or high-quality PNG</strong> for materials intended
+						for print. These formats preserve maximum image quality for
+						professional printing.
+					</p>
+				</div>
+			</div>
+
+			<h2>Image Optimization Tips</h2>
+
+			<h3>For Web Performance</h3>
+			<ul>
+				<li>
+					Use WebP with JPEG fallback for maximum compatibility and performance
+				</li>
+				<li>
+					Compress JPEG images to 70-80% quality for optimal size/quality
+					balance
+				</li>
+				<li>Use SVG for icons and simple graphics whenever possible</li>
+				<li>
+					Implement responsive images with different formats for different
+					screen sizes
+				</li>
+			</ul>
+
+			<h3>For Professional Use</h3>
+			<ul>
+				<li>Keep master files in lossless formats (PNG, TIFF) for editing</li>
+				<li>Export to appropriate formats based on final use case</li>
+				<li>Use color profiles for consistent color reproduction</li>
+				<li>
+					Consider file size requirements for different distribution channels
+				</li>
+			</ul>
+
+			<a href="/file-encyclopedia.html" class="cta-button"
+				>← Back to File Encyclopedia</a
+			>
+
+			<footer
+				style="
+					margin-top: 3rem;
+					padding-top: 2rem;
+					border-top: 1px solid #e5e7eb;
+					text-align: center;
+					color: #6b7280;
+					font-size: 0.875rem;
+				"
+			>
+				<p>
+					&copy; 2025 OrganiseFiles.live - Image File Types Guide. All rights
+					reserved.
+				</p>
+				<p>
+					<a
+						href="/contact.html"
+						style="color: #0ea5e9; text-decoration: none; margin: 0 0.5rem"
+						>Contact & Support</a
+					>
+					|
+					<a
+						href="/terms.html"
+						style="color: #0ea5e9; text-decoration: none; margin: 0 0.5rem"
+						>Terms of Service</a
+					>
+					|
+					<a
+						href="/privacy.html"
+						style="color: #0ea5e9; text-decoration: none; margin: 0 0.5rem"
+						>Privacy Policy</a
+					>
+				</p>
+				<p><a href="/" style="color: #0ea5e9">← Back to File Organizer</a></p>
+			</footer>
+		</div>
+	</body>
+</html>
