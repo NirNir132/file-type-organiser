@@ -179,39 +179,309 @@ const App: React.FC = () => {
 				)}
 			</main>
 
-			<footer className="mt-20 pt-10 border-t border-slate-300/70 w-full max-w-3xl text-center text-sm text-slate-600/90">
-				<p>
-					&copy; {new Date().getFullYear()} OrganiseFiles.live - All rights
-					reserved.
-				</p>
-				<p className="mt-2">
-					<a
-						href="/contact.html"
-						className="text-sky-600 hover:text-sky-700 hover:underline mx-2"
-					>
-						Contact & Support
-					</a>
-					|
-					<a
-						href="/terms.html"
-						className="text-sky-600 hover:text-sky-700 hover:underline mx-2"
-					>
-						Terms of Service
-					</a>
-					|
-					<a
-						href="/privacy.html"
-						className="text-sky-600 hover:text-sky-700 hover:underline mx-2"
-					>
-						Privacy Policy
-					</a>
-				</p>
-				<p className="text-xs text-slate-500/80 mt-3">
-					All file processing is done locally in your browser for your privacy.
-				</p>
-				<p className="text-xs text-slate-500/80 mt-1">
-					Crafted with React, Tailwind CSS, and a sprinkle of innovation.
-				</p>
+			{/* File Type Encyclopedia Section */}
+			<section className="mt-16 w-full max-w-4xl">
+				<div className="bg-white/90 backdrop-blur-sm shadow-2xl rounded-2xl p-8 border border-slate-200/50">
+					<div className="text-center mb-8">
+						<h2 className="text-3xl font-bold text-slate-800 mb-3">
+							📁 File Type Encyclopedia
+						</h2>
+						<p className="text-slate-600 max-w-2xl mx-auto">
+							Discover detailed information about file formats, their uses, and
+							best practices. Your complete reference guide to digital file
+							types.
+						</p>
+					</div>
+
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+						<a
+							href="/file-types-documents.html"
+							className="group bg-slate-50 hover:bg-blue-50 p-6 rounded-xl border border-slate-200 hover:border-blue-300 transition-all duration-300 hover:shadow-lg text-decoration-none"
+						>
+							<div className="text-center">
+								<div className="text-3xl mb-3">📄</div>
+								<h3 className="font-semibold text-slate-800 mb-2 group-hover:text-blue-700">
+									Document Files
+								</h3>
+								<p className="text-sm text-slate-600 mb-3">
+									Learn about PDF, DOCX, TXT, and other document formats.
+									Perfect for business and academic use.
+								</p>
+								<span className="text-blue-600 text-sm font-medium group-hover:text-blue-700">
+									Explore Documents →
+								</span>
+							</div>
+						</a>
+
+						<a
+							href="/file-types-images.html"
+							className="group bg-slate-50 hover:bg-green-50 p-6 rounded-xl border border-slate-200 hover:border-green-300 transition-all duration-300 hover:shadow-lg text-decoration-none"
+						>
+							<div className="text-center">
+								<div className="text-3xl mb-3">🖼️</div>
+								<h3 className="font-semibold text-slate-800 mb-2 group-hover:text-green-700">
+									Image Files
+								</h3>
+								<p className="text-sm text-slate-600 mb-3">
+									Understand JPEG, PNG, SVG, and WebP formats. Optimize images
+									for web and print.
+								</p>
+								<span className="text-green-600 text-sm font-medium group-hover:text-green-700">
+									View Image Guide →
+								</span>
+							</div>
+						</a>
+
+						<a
+							href="/file-types-audio.html"
+							className="group bg-slate-50 hover:bg-purple-50 p-6 rounded-xl border border-slate-200 hover:border-purple-300 transition-all duration-300 hover:shadow-lg text-decoration-none"
+						>
+							<div className="text-center">
+								<div className="text-3xl mb-3">🎵</div>
+								<h3 className="font-semibold text-slate-800 mb-2 group-hover:text-purple-700">
+									Audio Files
+								</h3>
+								<p className="text-sm text-slate-600 mb-3">
+									Master MP3, WAV, FLAC formats. Choose the right audio quality
+									for your needs.
+								</p>
+								<span className="text-purple-600 text-sm font-medium group-hover:text-purple-700">
+									Audio Formats →
+								</span>
+							</div>
+						</a>
+
+						<a
+							href="/file-types-video.html"
+							className="group bg-slate-50 hover:bg-red-50 p-6 rounded-xl border border-slate-200 hover:border-red-300 transition-all duration-300 hover:shadow-lg text-decoration-none"
+						>
+							<div className="text-center">
+								<div className="text-3xl mb-3">🎬</div>
+								<h3 className="font-semibold text-slate-800 mb-2 group-hover:text-red-700">
+									Video Files
+								</h3>
+								<p className="text-sm text-slate-600 mb-3">
+									Explore MP4, AVI, MOV formats. Optimize videos for streaming
+									and storage.
+								</p>
+								<span className="text-red-600 text-sm font-medium group-hover:text-red-700">
+									Video Guide →
+								</span>
+							</div>
+						</a>
+
+						<a
+							href="/file-types-archives.html"
+							className="group bg-slate-50 hover:bg-orange-50 p-6 rounded-xl border border-slate-200 hover:border-orange-300 transition-all duration-300 hover:shadow-lg text-decoration-none"
+						>
+							<div className="text-center">
+								<div className="text-3xl mb-3">📦</div>
+								<h3 className="font-semibold text-slate-800 mb-2 group-hover:text-orange-700">
+									Archive Files
+								</h3>
+								<p className="text-sm text-slate-600 mb-3">
+									Compare ZIP, RAR, 7Z formats. Choose the best compression for
+									your files.
+								</p>
+								<span className="text-orange-600 text-sm font-medium group-hover:text-orange-700">
+									Archive Types →
+								</span>
+							</div>
+						</a>
+
+						<a
+							href="/file-types-programming.html"
+							className="group bg-slate-50 hover:bg-indigo-50 p-6 rounded-xl border border-slate-200 hover:border-indigo-300 transition-all duration-300 hover:shadow-lg text-decoration-none"
+						>
+							<div className="text-center">
+								<div className="text-3xl mb-3">💻</div>
+								<h3 className="font-semibold text-slate-800 mb-2 group-hover:text-indigo-700">
+									Code Files
+								</h3>
+								<p className="text-sm text-slate-600 mb-3">
+									Navigate JavaScript, Python, HTML files. Essential reference
+									for developers.
+								</p>
+								<span className="text-indigo-600 text-sm font-medium group-hover:text-indigo-700">
+									Programming Files →
+								</span>
+							</div>
+						</a>
+					</div>
+
+					<div className="text-center mt-8">
+						<a
+							href="/file-encyclopedia.html"
+							className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-sky-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-sky-700 hover:to-indigo-700 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5"
+						>
+							<span>📚 Complete File Encyclopedia</span>
+							<svg
+								className="w-5 h-5 ml-2"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth={2}
+									d="M9 5l7 7-7 7"
+								/>
+							</svg>
+						</a>
+					</div>
+				</div>
+			</section>
+
+			<footer className="mt-20 w-full max-w-6xl">
+				<div className="bg-white/70 backdrop-blur-sm shadow-xl rounded-2xl border border-slate-200/50 overflow-hidden">
+					{/* Main Footer Content */}
+					<div className="p-8 lg:p-12">
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+							{/* Brand Section */}
+							<div className="lg:col-span-1">
+								<h3 className="text-xl font-bold text-slate-800 mb-4">
+									📁 OrganiseFiles.live
+								</h3>
+								<p className="text-slate-600 text-sm leading-relaxed mb-4">
+									Your ultimate file organization toolkit. Extract, sort, and
+									manage files with ease.
+								</p>
+								<div className="flex space-x-2">
+									<div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+									<span className="text-xs text-slate-500">
+										Processing locally for privacy
+									</span>
+								</div>
+							</div>
+
+							{/* Popular Tools */}
+							<div>
+								<h4 className="font-semibold text-slate-800 mb-4">
+									🛠️ Popular Tools
+								</h4>
+								<div className="space-y-2">
+									<a
+										href="/how-to-extract-pdf-files.html"
+										className="block text-sm text-slate-600 hover:text-sky-600 transition-colors"
+									>
+										Extract PDF Files
+									</a>
+									<a
+										href="/organize-photos-by-type.html"
+										className="block text-sm text-slate-600 hover:text-sky-600 transition-colors"
+									>
+										Organize Photos
+									</a>
+									<a
+										href="/unzip-files-online.html"
+										className="block text-sm text-slate-600 hover:text-sky-600 transition-colors"
+									>
+										Unzip Files Online
+									</a>
+									<a
+										href="/rar-extractor-online.html"
+										className="block text-sm text-slate-600 hover:text-sky-600 transition-colors"
+									>
+										RAR Extractor
+									</a>
+								</div>
+							</div>
+
+							{/* File Encyclopedia */}
+							<div>
+								<h4 className="font-semibold text-slate-800 mb-4">
+									📚 File Encyclopedia
+								</h4>
+								<div className="space-y-2">
+									<a
+										href="/file-types-documents.html"
+										className="block text-sm text-slate-600 hover:text-purple-600 transition-colors"
+									>
+										Document Types
+									</a>
+									<a
+										href="/file-types-images.html"
+										className="block text-sm text-slate-600 hover:text-green-600 transition-colors"
+									>
+										Image Formats
+									</a>
+									<a
+										href="/file-types-audio.html"
+										className="block text-sm text-slate-600 hover:text-purple-600 transition-colors"
+									>
+										Audio Files
+									</a>
+									<a
+										href="/file-types-video.html"
+										className="block text-sm text-slate-600 hover:text-red-600 transition-colors"
+									>
+										Video Formats
+									</a>
+								</div>
+							</div>
+
+							{/* Support & Legal */}
+							<div>
+								<h4 className="font-semibold text-slate-800 mb-4">
+									🤝 Support & Legal
+								</h4>
+								<div className="space-y-2">
+									<a
+										href="/contact.html"
+										className="block text-sm text-slate-600 hover:text-sky-600 transition-colors"
+									>
+										Contact & Support
+									</a>
+									<a
+										href="/terms.html"
+										className="block text-sm text-slate-600 hover:text-sky-600 transition-colors"
+									>
+										Terms of Service
+									</a>
+									<a
+										href="/privacy.html"
+										className="block text-sm text-slate-600 hover:text-sky-600 transition-colors"
+									>
+										Privacy Policy
+									</a>
+									<a
+										href="/file-encyclopedia.html"
+										className="block text-sm text-slate-600 hover:text-indigo-600 transition-colors font-medium"
+									>
+										Complete File Guide
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					{/* Bottom Bar */}
+					<div className="bg-gradient-to-r from-slate-50 to-slate-100 px-8 py-6 border-t border-slate-200/50">
+						<div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+							<div className="text-center md:text-left">
+								<p className="text-sm text-slate-600">
+									&copy; {new Date().getFullYear()} OrganiseFiles.live - All
+									rights reserved.
+								</p>
+								<p className="text-xs text-slate-500 mt-1">
+									Crafted with React, Tailwind CSS, and a sprinkle of
+									innovation. ✨
+								</p>
+							</div>
+							<div className="flex items-center space-x-4">
+								<div className="flex items-center space-x-2 text-xs text-slate-500">
+									<div className="w-2 h-2 bg-slate-400 rounded-full"></div>
+									<span>Browser-based processing</span>
+								</div>
+								<div className="flex items-center space-x-2 text-xs text-slate-500">
+									<div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+									<span>No uploads required</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</footer>
 		</div>
 	);
