@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="Complete guide to programming file types: JavaScript, Python, HTML, CSS, PHP, JSON, and more. Learn about code file formats, languages, and development files."
+		/>
+		<meta
+			name="keywords"
+			content="programming file types, code file formats, JavaScript files, Python scripts, HTML files, CSS files, PHP files, JSON format, development files"
+		/>
+		<title>Programming File Types Guide - JS, PY, HTML, CSS, PHP & More</title>
+
+		<!-- Open Graph / Social Media Meta Tags -->
+		<meta property="og:type" content="website" />
+		<meta
+			property="og:title"
+			content="Programming File Types Guide - JS, PY, HTML, CSS, PHP & More"
+		/>
+		<meta
+			property="og:description"
+			content="Complete guide to programming file types: JavaScript, Python, HTML, CSS, PHP, JSON, and more. Essential reference for developers and coders."
+		/>
+		<meta
+			property="og:url"
+			content="https://organisefiles.live/file-types-programming"
+		/>
+		<meta property="og:site_name" content="OrganiseFiles.live" />
+
+		<!-- Twitter Card Meta Tags -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta
+			name="twitter:title"
+			content="Programming File Types Guide - JS, PY, HTML, CSS, PHP & More"
+		/>
+		<meta
+			name="twitter:description"
+			content="Complete guide to programming file types and code file formats."
+		/>
+
+		<!-- Additional SEO Meta Tags -->
+		<meta name="author" content="OrganiseFiles" />
+		<meta name="robots" content="index, follow" />
+		<link
+			rel="canonical"
+			href="https://organisefiles.live/file-types-programming"
+		/>
+
+		<!-- Google tag (gtag.js) -->
+		<script
+			async
+			src="https://www.googletagmanager.com/gtag/js?id=G-BT032RNJTT"
+		></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag("js", new Date());
+			gtag("config", "G-BT032RNJTT");
+		</script>
+
+		<link
+			rel="icon"
+			href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📁</text></svg>"
+		/>
+
+		<style>
+			body {
+				font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+					Roboto, sans-serif;
+				line-height: 1.7;
+				color: #374151;
+				max-width: 800px;
+				margin: 0 auto;
+				padding: 2rem;
+				background: linear-gradient(
+					135deg,
+					#e0f2fe 0%,
+					#e8eaf6 50%,
+					#f3e5f5 100%
+				);
+				min-height: 100vh;
+			}
+			.container {
+				background: white;
+				padding: 3rem;
+				border-radius: 1rem;
+				box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+			}
+			h1 {
+				color: #1f2937;
+				font-size: 2.5rem;
+				font-weight: 800;
+				margin-bottom: 1rem;
+				background: linear-gradient(135deg, #0284c7, #4338ca);
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				background-clip: text;
+			}
+			h2 {
+				color: #1f2937;
+				font-size: 1.75rem;
+				font-weight: 700;
+				margin: 2rem 0 1rem 0;
+			}
+			h3 {
+				color: #1f2937;
+				font-size: 1.25rem;
+				font-weight: 600;
+				margin: 1.5rem 0 0.5rem 0;
+			}
+			.breadcrumb {
+				font-size: 0.875rem;
+				color: #6b7280;
+				margin-bottom: 2rem;
+			}
+			.breadcrumb a {
+				color: #0ea5e9;
+				text-decoration: none;
+			}
+			.file-card {
+				background: #f8fafc;
+				padding: 2rem;
+				border-radius: 0.5rem;
+				margin: 2rem 0;
+				border-left: 4px solid #2563eb;
+			}
+			.file-header {
+				display: flex;
+				align-items: center;
+				margin-bottom: 1rem;
+			}
+			.file-icon {
+				font-size: 2.5rem;
+				margin-right: 1rem;
+			}
+			.file-title h3 {
+				margin: 0;
+				color: #1f2937;
+			}
+			.file-title p {
+				margin: 0;
+				color: #6b7280;
+				font-size: 0.9rem;
+			}
+			.facts-benefits {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 2rem;
+				margin: 1.5rem 0;
+			}
+			.facts,
+			.benefits {
+				background: white;
+				padding: 1.5rem;
+				border-radius: 0.5rem;
+				border: 1px solid #e5e7eb;
+			}
+			.facts h4,
+			.benefits h4 {
+				color: #1f2937;
+				margin-top: 0;
+			}
+			.facts {
+				border-left: 4px solid #10b981;
+			}
+			.benefits {
+				border-left: 4px solid #f59e0b;
+			}
+			.comparison-table {
+				width: 100%;
+				border-collapse: collapse;
+				margin: 2rem 0;
+			}
+			.comparison-table th,
+			.comparison-table td {
+				border: 1px solid #e5e7eb;
+				padding: 0.75rem;
+				text-align: left;
+			}
+			.comparison-table th {
+				background: #f3f4f6;
+				font-weight: 600;
+			}
+			.cta-button {
+				display: inline-block;
+				background: linear-gradient(135deg, #0ea5e9, #4338ca);
+				color: white;
+				padding: 1rem 2rem;
+				border-radius: 0.5rem;
+				text-decoration: none;
+				font-weight: 600;
+				margin: 2rem 0;
+				transition: all 0.3s ease;
+			}
+			.cta-button:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+			}
+			.use-case-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+				gap: 1.5rem;
+				margin: 2rem 0;
+			}
+			.use-case-card {
+				background: #fef3c7;
+				padding: 1.5rem;
+				border-radius: 0.5rem;
+				border: 1px solid #fbbf24;
+			}
+			.code-example {
+				background: #1f2937;
+				color: #f9fafb;
+				padding: 1rem;
+				border-radius: 0.5rem;
+				font-family: "Courier New", monospace;
+				font-size: 0.9rem;
+				margin: 1rem 0;
+				overflow-x: auto;
+			}
+			@media (max-width: 768px) {
+				.facts-benefits {
+					grid-template-columns: 1fr;
+				}
+				.file-header {
+					flex-direction: column;
+					text-align: center;
+				}
+				.file-icon {
+					margin-right: 0;
+					margin-bottom: 1rem;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<nav class="breadcrumb">
+				<a href="/">Home</a> →
+				<a href="/file-encyclopedia.html">File Encyclopedia</a> → Programming
+				File Types
+			</nav>
+
+			<h1>💻 Programming File Types Guide</h1>
+
+			<p>
+				<strong>Navigate the world of code and development files.</strong>
+				From web technologies like HTML and CSS to programming languages like
+				Python and JavaScript, understanding file types is essential for
+				developers. This comprehensive guide covers all major programming file
+				formats and their purposes.
+			</p>
+
+			<h2>Web Development File Types</h2>
+
+			<div class="file-card">
+				<div class="file-header">
+					<div class="file-icon">🌐</div>
+					<div class="file-title">
+						<h3>.html - HyperText Markup Language</h3>
+						<p>The foundation of web pages</p>
+					</div>
+				</div>
+				<p>
+					HTML (HyperText Markup Language) is the standard markup language for
+					creating web pages. Developed by Tim Berners-Lee in 1993, HTML uses
+					tags to structure content and define the skeleton of every website on
+					the internet.
+				</p>
+				<div class="code-example">
+					&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;My
+					Website&lt;/title&gt; &lt;/head&gt; &lt;body&gt; &lt;h1&gt;Hello
+					World!&lt;/h1&gt; &lt;/body&gt; &lt;/html&gt;
+				</div>
+				<div class="facts-benefits">
+					<div class="facts">
+						<h4>🎯 Cool Facts</h4>
+						<ul>
+							<li>Created by Tim Berners-Lee in 1993 at CERN</li>
+							<li>The first website ever created is still online</li>
+							<li>HTML5 introduced semantic elements and multimedia support</li>
+							<li>Every website on the internet uses HTML in some form</li>
+						</ul>
+					</div>
+					<div class="benefits">
+						<h4>✨ Benefits</h4>
+						<ul>
+							<li>Universal browser compatibility</li>
+							<li>Easy to learn and understand</li>
+							<li>Foundation for all web development</li>
+							<li>SEO-friendly and accessible</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div class="file-card">
+				<div class="file-header">
+					<div class="file-icon">🎨</div>
+					<div class="file-title">
+						<h3>.css - Cascading Style Sheets</h3>
+						<p>Styling and layout for web pages</p>
+					</div>
+				</div>
+				<p>
+					CSS (Cascading Style Sheets) is a stylesheet language used to describe
+					the presentation of HTML documents. It controls layout, colors, fonts,
+					and visual design, separating content from presentation for better
+					maintainability.
+				</p>
+				<div class="code-example">
+					body { font-family: Arial, sans-serif; background-color: #f0f0f0;
+					margin: 0; padding: 20px; } h1 { color: #333; text-align: center; }
+				</div>
+				<div class="facts-benefits">
+					<div class="facts">
+						<h4>🎯 Cool Facts</h4>
+						<ul>
+							<li>Introduced in 1996 to separate content from presentation</li>
+							<li>CSS3 brought animations, transforms, and modern layouts</li>
+							<li>Supports responsive design for mobile devices</li>
+							<li>Can create complex animations without JavaScript</li>
+						</ul>
+					</div>
+					<div class="benefits">
+						<h4>✨ Benefits</h4>
+						<ul>
+							<li>Clean separation of design and content</li>
+							<li>Reusable styles across multiple pages</li>
+							<li>Responsive design capabilities</li>
+							<li>Improved accessibility and maintainability</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div class="file-card">
+				<div class="file-header">
+					<div class="file-icon">⚡</div>
+					<div class="file-title">
+						<h3>.js - JavaScript</h3>
+						<p>Dynamic behavior and interactivity</p>
+					</div>
+				</div>
+				<p>
+					JavaScript is a high-level programming language that enables
+					interactive web pages and is an essential part of web applications.
+					Created by Brendan Eich in just 10 days in 1995, it has become one of
+					the most popular programming languages.
+				</p>
+				<div class="code-example">
+					function greetUser(name) { return `Hello, ${name}! Welcome to our
+					website.`; } document.addEventListener('DOMContentLoaded', function()
+					{ console.log(greetUser('Developer')); });
+				</div>
+				<div class="facts-benefits">
+					<div class="facts">
+						<h4>🎯 Cool Facts</h4>
+						<ul>
+							<li>Created in just 10 days by Brendan Eich at Netscape</li>
+							<li>Originally called "LiveScript" before being renamed</li>
+							<li>Powers both frontend and backend development (Node.js)</li>
+							<li>One of the most popular programming languages globally</li>
+						</ul>
+					</div>
+					<div class="benefits">
+						<h4>✨ Benefits</h4>
+						<ul>
+							<li>Runs in every web browser without installation</li>
+							<li>Versatile - works for web, mobile, and server development</li>
+							<li>Huge community and extensive library ecosystem</li>
+							<li>Constantly evolving with new features (ES6+)</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<h2>Programming Language Files</h2>
+
+			<div class="file-card">
+				<div class="file-header">
+					<div class="file-icon">🐍</div>
+					<div class="file-title">
+						<h3>.py - Python Script</h3>
+						<p>Versatile programming language</p>
+					</div>
+				</div>
+				<p>
+					Python is a high-level, interpreted programming language known for its
+					simplicity and readability. Created by Guido van Rossum in 1991,
+					Python emphasizes code readability and simplicity, making it ideal for
+					beginners and experts alike.
+				</p>
+				<div class="code-example">
+					def calculate_fibonacci(n): if n <= 1: return n return
+					calculate_fibonacci(n-1) + calculate_fibonacci(n-2) print(f"The 10th
+					Fibonacci number is: {calculate_fibonacci(10)}")
+				</div>
+				<div class="facts-benefits">
+					<div class="facts">
+						<h4>🎯 Cool Facts</h4>
+						<ul>
+							<li>Named after the British comedy group "Monty Python"</li>
+							<li>Used by NASA, Google, Instagram, and Spotify</li>
+							<li>Dominant language in AI and machine learning</li>
+							<li>Philosophy: "There should be one obvious way to do it"</li>
+						</ul>
+					</div>
+					<div class="benefits">
+						<h4>✨ Benefits</h4>
+						<ul>
+							<li>Extremely readable and beginner-friendly syntax</li>
+							<li>Vast ecosystem of libraries and frameworks</li>
+							<li>Excellent for AI, data science, and web development</li>
+							<li>Cross-platform compatibility</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div class="file-card">
+				<div class="file-header">
+					<div class="file-icon">🌐</div>
+					<div class="file-title">
+						<h3>.php - PHP Script</h3>
+						<p>Server-side web development</p>
+					</div>
+				</div>
+				<p>
+					PHP (PHP: Hypertext Preprocessor) is a server-side scripting language
+					designed specifically for web development. Created by Rasmus Lerdorf
+					in 1995, PHP powers a significant portion of the web, including
+					WordPress and Facebook.
+				</p>
+				<div class="code-example">
+					&lt;?php function greetUser($name, $time) { $greeting = date('H') < 12
+					? 'Good morning' : 'Good evening'; return "$greeting, $name! Current
+					time: $time"; } echo greetUser('Developer', date('Y-m-d H:i:s'));
+					?&gt;
+				</div>
+				<div class="facts-benefits">
+					<div class="facts">
+						<h4>🎯 Cool Facts</h4>
+						<ul>
+							<li>
+								Powers over 75% of websites with known server-side languages
+							</li>
+							<li>WordPress, which runs 40% of websites, is built with PHP</li>
+							<li>Originally stood for "Personal Home Page"</li>
+							<li>Facebook was initially built entirely in PHP</li>
+						</ul>
+					</div>
+					<div class="benefits">
+						<h4>✨ Benefits</h4>
+						<ul>
+							<li>Easy to learn and deploy for web development</li>
+							<li>Excellent database integration capabilities</li>
+							<li>Large community and extensive documentation</li>
+							<li>Cost-effective hosting options widely available</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<h2>Data Exchange File Types</h2>
+
+			<div class="file-card">
+				<div class="file-header">
+					<div class="file-icon">📄</div>
+					<div class="file-title">
+						<h3>.json - JavaScript Object Notation</h3>
+						<p>Lightweight data interchange format</p>
+					</div>
+				</div>
+				<p>
+					JSON (JavaScript Object Notation) is a lightweight, text-based data
+					interchange format. Despite its name suggesting a connection to
+					JavaScript, JSON is language-independent and has become the standard
+					for APIs and configuration files.
+				</p>
+				<div class="code-example">
+					{ "name": "John Doe", "age": 30, "city": "New York", "skills":
+					["JavaScript", "Python", "HTML"], "isEmployed": true }
+				</div>
+				<div class="facts-benefits">
+					<div class="facts">
+						<h4>🎯 Cool Facts</h4>
+						<ul>
+							<li>
+								Derived from JavaScript but is completely language-independent
+							</li>
+							<li>Largely replaced XML for web APIs due to simplicity</li>
+							<li>Human-readable and easy to parse programmatically</li>
+							<li>Native support in most modern programming languages</li>
+						</ul>
+					</div>
+					<div class="benefits">
+						<h4>✨ Benefits</h4>
+						<ul>
+							<li>Lightweight and fast to parse</li>
+							<li>Perfect for REST APIs and web services</li>
+							<li>Human-readable and easy to debug</li>
+							<li>Universal support across programming languages</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<h2>Programming File Types Comparison</h2>
+			<table class="comparison-table">
+				<thead>
+					<tr>
+						<th>Format</th>
+						<th>Type</th>
+						<th>Primary Use</th>
+						<th>Difficulty</th>
+						<th>Platform</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><strong>HTML</strong></td>
+						<td>Markup</td>
+						<td>Web structure</td>
+						<td>Easy</td>
+						<td>Web browsers</td>
+					</tr>
+					<tr>
+						<td><strong>CSS</strong></td>
+						<td>Stylesheet</td>
+						<td>Web styling</td>
+						<td>Easy-Medium</td>
+						<td>Web browsers</td>
+					</tr>
+					<tr>
+						<td><strong>JavaScript</strong></td>
+						<td>Programming</td>
+						<td>Web interactivity</td>
+						<td>Medium</td>
+						<td>Browsers, Node.js</td>
+					</tr>
+					<tr>
+						<td><strong>Python</strong></td>
+						<td>Programming</td>
+						<td>General purpose</td>
+						<td>Easy-Medium</td>
+						<td>Cross-platform</td>
+					</tr>
+					<tr>
+						<td><strong>PHP</strong></td>
+						<td>Programming</td>
+						<td>Server-side web</td>
+						<td>Medium</td>
+						<td>Web servers</td>
+					</tr>
+					<tr>
+						<td><strong>JSON</strong></td>
+						<td>Data</td>
+						<td>Data exchange</td>
+						<td>Easy</td>
+						<td>Universal</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<h2>When to Use Each File Type</h2>
+
+			<div class="use-case-grid">
+				<div class="use-case-card">
+					<h3>🌐 For Web Structure</h3>
+					<p>
+						<strong>Use HTML</strong> to create the basic structure and content
+						of web pages. Essential foundation for any website or web
+						application.
+					</p>
+				</div>
+
+				<div class="use-case-card">
+					<h3>🎨 For Web Styling</h3>
+					<p>
+						<strong>Use CSS</strong> to control the visual presentation, layout,
+						and responsive design of your HTML content across different devices.
+					</p>
+				</div>
+
+				<div class="use-case-card">
+					<h3>⚡ For Web Interactivity</h3>
+					<p>
+						<strong>Use JavaScript</strong> to add dynamic behavior, handle user
+						interactions, and create modern web applications with real-time
+						features.
+					</p>
+				</div>
+
+				<div class="use-case-card">
+					<h3>🐍 For General Programming</h3>
+					<p>
+						<strong>Use Python</strong> for data analysis, machine learning,
+						automation, web backends, and when you need readable, maintainable
+						code.
+					</p>
+				</div>
+
+				<div class="use-case-card">
+					<h3>🌐 For Server-Side Web</h3>
+					<p>
+						<strong>Use PHP</strong> for server-side web development, especially
+						for content management systems, e-commerce, and database-driven
+						websites.
+					</p>
+				</div>
+
+				<div class="use-case-card">
+					<h3>📄 For Data Exchange</h3>
+					<p>
+						<strong>Use JSON</strong> for APIs, configuration files, and data
+						storage when you need a lightweight, human-readable format.
+					</p>
+				</div>
+			</div>
+
+			<h2>Development Best Practices</h2>
+
+			<h3>File Organization</h3>
+			<ul>
+				<li>
+					Keep HTML, CSS, and JavaScript files separate for maintainability
+				</li>
+				<li>Use descriptive filenames that indicate purpose</li>
+				<li>Organize files into logical directory structures</li>
+				<li>Follow consistent naming conventions (camelCase, kebab-case)</li>
+			</ul>
+
+			<h3>Code Quality</h3>
+			<ul>
+				<li>Use consistent indentation and formatting</li>
+				<li>Add comments to explain complex logic</li>
+				<li>Follow language-specific style guides</li>
+				<li>Use version control (Git) to track changes</li>
+			</ul>
+
+			<h3>Performance Considerations</h3>
+			<ul>
+				<li>Minify CSS and JavaScript files for production</li>
+				<li>Optimize images and compress assets</li>
+				<li>Use efficient algorithms and data structures</li>
+				<li>Consider caching strategies for better performance</li>
+			</ul>
+
+			<a href="/file-encyclopedia.html" class="cta-button"
+				>← Back to File Encyclopedia</a
+			>
+
+			<footer
+				style="
+					margin-top: 3rem;
+					padding-top: 2rem;
+					border-top: 1px solid #e5e7eb;
+					text-align: center;
+					color: #6b7280;
+					font-size: 0.875rem;
+				"
+			>
+				<p>
+					&copy; 2025 OrganiseFiles.live - Programming File Types Guide. All
+					rights reserved.
+				</p>
+				<p>
+					<a
+						href="/contact.html"
+						style="color: #0ea5e9; text-decoration: none; margin: 0 0.5rem"
+						>Contact & Support</a
+					>
+					|
+					<a
+						href="/terms.html"
+						style="color: #0ea5e9; text-decoration: none; margin: 0 0.5rem"
+						>Terms of Service</a
+					>
+					|
+					<a
+						href="/privacy.html"
+						style="color: #0ea5e9; text-decoration: none; margin: 0 0.5rem"
+						>Privacy Policy</a
+					>
+				</p>
+				<p><a href="/" style="color: #0ea5e9">← Back to File Organizer</a></p>
+			</footer>
+		</div>
+	</body>
+</html>
