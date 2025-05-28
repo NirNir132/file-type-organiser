@@ -415,16 +415,21 @@ function FileTypeOrganizer() {
 	const dropZoneStyle: React.CSSProperties = {
 		width: "100%",
 		padding: "clamp(3rem, 6vw, 4rem) clamp(1.5rem, 4vw, 2rem)",
-		border: dragActive ? "2px solid #0ea5e9" : "2px dashed #94a3b8",
 		borderRadius: "1rem",
 		textAlign: "center",
 		cursor: "pointer",
 		transition: "all 0.3s ease",
-		backgroundColor: dragActive ? "#e0f2fe" : "#ffffff",
+		backgroundColor: dragActive
+			? "rgba(224, 242, 254, 0.9)"
+			: "rgba(255, 255, 255, 0.9)",
+		backdropFilter: "blur(16px)",
 		boxShadow: dragActive
 			? "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 4px rgba(14, 165, 233, 0.3)"
-			: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+			: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
 		transform: dragActive ? "scale(1.02)" : "scale(1)",
+		border: dragActive
+			? "2px solid #0ea5e9"
+			: "1px solid rgba(226, 232, 240, 0.5)",
 	};
 
 	const iconStyle: React.CSSProperties = {
@@ -438,10 +443,11 @@ function FileTypeOrganizer() {
 	const cardStyle: React.CSSProperties = {
 		width: "100%",
 		padding: "2rem",
-		backgroundColor: "#ffffff",
+		backgroundColor: "rgba(255, 255, 255, 0.9)",
+		backdropFilter: "blur(16px)",
 		borderRadius: "1rem",
 		boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-		border: "1px solid rgba(0, 0, 0, 0.05)",
+		border: "1px solid rgba(226, 232, 240, 0.5)",
 	};
 
 	const buttonStyle: React.CSSProperties = {
