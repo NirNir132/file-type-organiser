@@ -32,6 +32,8 @@ declare module "heic2any" {
 declare module "mammoth" {
 	interface ConvertToHtmlOptions {
 		convertImage?: any;
+		styleMap?: string[];
+		includeDefaultStyleMap?: boolean;
 	}
 
 	interface ConvertResult {
@@ -39,11 +41,8 @@ declare module "mammoth" {
 		messages: any[];
 	}
 
-	export function convertToHtml(
-		buffer: ArrayBuffer,
-		options?: ConvertToHtmlOptions
-	): Promise<ConvertResult>;
-	export function extractRawText(buffer: ArrayBuffer): Promise<ConvertResult>;
+	export function convertToHtml(options: { arrayBuffer: ArrayBuffer } & ConvertToHtmlOptions): Promise<ConvertResult>;
+	export function extractRawText(options: { arrayBuffer: ArrayBuffer }): Promise<ConvertResult>;
 }
 
 declare module "@ffmpeg/ffmpeg" {
@@ -76,12 +75,13 @@ declare module "html2canvas" {
 		useCORS?: boolean;
 		width?: number;
 		height?: number;
+		windowWidth?: number;
+		windowHeight?: number;
+		scrollX?: number;
+		scrollY?: number;
 	}
 
-	function html2canvas(
-		element: HTMLElement,
-		options?: Options
-	): Promise<HTMLCanvasElement>;
+	function html2canvas(element: HTMLElement, options?: Options): Promise<HTMLCanvasElement>;
 	export default html2canvas;
 }
 
@@ -105,6 +105,58 @@ declare module "pdf-lib" {
 	}
 	
 	export class PDFImage {}
+}
+
+declare module "jspdf" {
+	interface jsPDFOptions {
+		orientation?: 'portrait' | 'landscape';
+		unit?: 'pt' | 'mm' | 'cm' | 'in';
+		format?: string | [number, number];
+		compress?: boolean;
+	}
+	
+	export default class jsPDF {
+		constructor(options?: jsPDFOptions);
+		text(text: string, x: number, y: number, options?: any): jsPDF;
+		setFontSize(size: number): jsPDF;
+		setFont(fontName: string, fontStyle?: string): jsPDF;
+		addPage(format?: string | [number, number], orientation?: 'portrait' | 'landscape'): jsPDF;
+		html(element: HTMLElement | string, options?: {
+			callback?: (pdf: jsPDF) => void;
+			x?: number;
+			y?: number;
+			width?: number;
+			windowWidth?: number;
+			margin?: number | [number, number, number, number];
+			autoPaging?: boolean | 'text' | 'slice';
+			html2canvas?: any;
+			jsPDF?: jsPDF;
+		}): Promise<jsPDF>;
+		save(filename?: string): jsPDF;
+		output(type?: 'blob' | 'bloburi' | 'dataurlstring' | 'dataurlnewwindow' | 'datauri'): any;
+		internal: {
+			pageSize: {
+				width: number;
+				height: number;
+			};
+		};
+	}
+}
+
+declare module "jspdf-autotable" {
+	interface AutoTableOptions {
+		head?: any[][];
+		body?: any[][];
+		startY?: number;
+		margin?: { top?: number; right?: number; bottom?: number; left?: number };
+		pageBreak?: 'auto' | 'avoid' | 'always';
+		theme?: 'striped' | 'grid' | 'plain';
+		styles?: any;
+		headStyles?: any;
+		bodyStyles?: any;
+	}
+	
+	export default function autoTable(doc: any, options: AutoTableOptions): void;
 }
 
 declare module "xlsx" {

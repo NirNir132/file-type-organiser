@@ -22,7 +22,9 @@
 		"xlsx": "^0.18.5",
 		"pdfjs-dist": "^4.0.189",
 		"fflate": "^0.8.1",
-		"html2canvas": "^1.4.1"
+		"html2canvas": "^1.4.1",
+		"jspdf": "^2.5.1",
+		"jspdf-autotable": "^3.8.2"
 	},
 	"devDependencies": {
 		"@tailwindcss/typography": "^0.5.10",
