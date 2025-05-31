@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { FilterOptions } from "../types";
 import { Search, Filter, X, FileType, Calendar, HardDrive } from "lucide-react";
 

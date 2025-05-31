@@ -168,8 +168,7 @@ export const getFileExtension = (filename: string): string => {
 
 export const searchFiles = (
 	files: AppFile[],
-	searchTerm: string,
-	searchInContent: boolean = false
+	searchTerm: string
 ): AppFile[] => {
 	if (!searchTerm.trim()) return files;
 
@@ -186,47 +185,43 @@ export const searchFiles = (
 	});
 };
 
-export const filterFiles = (
+export function filterFiles(
 	files: AppFile[],
-	options: FilterOptions
-): AppFile[] => {
+	{ searchTerm, fileTypes, sizeRange, dateRange }: FilterOptions
+): AppFile[] {
 	let filtered = files;
 
 	// Search filter
-	if (options.searchTerm) {
-		filtered = searchFiles(filtered, options.searchTerm);
+	if (searchTerm) {
+		filtered = searchFiles(filtered, searchTerm);
 	}
 
 	// File type filter
-	if (options.fileTypes.length > 0) {
+	if (fileTypes.length > 0) {
 		filtered = filtered.filter((file) => {
 			const extension = getFileExtension(file.name);
-			return options.fileTypes.some(
-				(type) => extension === normalizeExtension(type)
-			);
+			return fileTypes.some((type) => extension === normalizeExtension(type));
 		});
 	}
 
 	// Size filter
-	if (options.sizeRange) {
+	if (sizeRange) {
 		filtered = filtered.filter(
-			(file) =>
-				file.size >= options.sizeRange!.min &&
-				file.size <= options.sizeRange!.max
+			(file) => file.size >= sizeRange.min && file.size <= sizeRange.max
 		);
 	}
 
 	// Date filter
-	if (options.dateRange) {
+	if (dateRange) {
 		filtered = filtered.filter(
 			(file) =>
-				file.lastModified >= options.dateRange!.start.getTime() &&
-				file.lastModified <= options.dateRange!.end.getTime()
+				file.lastModified >= dateRange.start.getTime() &&
+				file.lastModified <= dateRange.end.getTime()
 		);
 	}
 
 	return filtered;
-};
+}
 
 export const getFolderStats = (files: AppFile[]): FolderStats => {
 	const fileTypeStats: Record<string, number> = {};
@@ -264,8 +259,7 @@ export const formatFileSize = (bytes: number): string => {
 };
 
 export const createZipFromFiles = async (
-	filesToZip: AppFile[],
-	zipFileName: string
+	filesToZip: AppFile[]
 ): Promise<Blob> => {
 	if (typeof JSZip === "undefined") {
 		throw new Error(

@@ -2,16 +2,15 @@ import React, { useState, useCallback } from "react";
 import { FileNode, AppFile } from "../types";
 import { formatFileSize } from "../services/fileService";
 import {
-	ChevronDown,
-	ChevronRight,
 	Folder,
-	File,
 	FileText,
 	Image,
 	Music,
 	Video,
 	Archive,
 	Code,
+	ChevronRight,
+	ChevronDown,
 } from "lucide-react";
 
 interface FolderTreeProps {

@@ -134,17 +134,10 @@ const App: React.FC = () => {
 		setError(null);
 
 		try {
-			const zipName =
-				selectedFiles.size > 0
-					? "selected_files.zip"
-					: filters.fileTypes.length > 0
-					? `filtered_${filters.fileTypes.join("_")}.zip`
-					: "folder_contents.zip";
-
-			const zipBlob = await createZipFromFiles(filesToDownload, zipName);
+			const zipBlob = await createZipFromFiles(filesToDownload);
 			const link = document.createElement("a");
 			link.href = URL.createObjectURL(zipBlob);
-			link.download = zipName;
+			link.download = "selected_files.zip";
 			document.body.appendChild(link);
 			link.click();
 			document.body.removeChild(link);
@@ -159,7 +152,7 @@ const App: React.FC = () => {
 		} finally {
 			setIsZipping(false);
 		}
-	}, [getSelectedFilesForDownload, selectedFiles.size, filters.fileTypes]);
+	}, [getSelectedFilesForDownload]);
 
 	const clearSelection = useCallback(() => {
 		setSelectedFiles(new Set());
@@ -281,11 +274,7 @@ const App: React.FC = () => {
 										<Download className="w-4 h-4" />
 									)}
 									<span>
-										{isZipping
-											? "Creating ZIP..."
-											: `Download ${
-													selectedFiles.size > 0 ? "Selected" : "Filtered"
-											  } Files`}
+										{isZipping ? "Creating ZIP..." : `Download Selected Files`}
 									</span>
 								</button>
 							</div>
