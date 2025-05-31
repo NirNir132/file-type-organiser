@@ -46,3 +46,39 @@ export interface FolderStats {
 	totalSize: number;
 	fileTypeStats: Record<string, number>;
 }
+
+// Conversion-related types
+export interface ConversionFormat {
+	from: string;
+	to: string[];
+}
+
+export interface ConversionCategory {
+	name: string;
+	icon: string;
+	formats: ConversionFormat[];
+}
+
+export interface ConversionProgress {
+	stage: string;
+	progress: number;
+	message: string;
+}
+
+export interface ConversionResult {
+	success: boolean;
+	file?: File;
+	error?: string;
+	originalName: string;
+	targetFormat: string;
+	fileSize?: number;
+}
+
+export interface ConversionOptions {
+	quality?: number;
+	width?: number;
+	height?: number;
+	bitrate?: number;
+	sampleRate?: number;
+	compressionLevel?: number;
+}
