@@ -234,6 +234,21 @@ const App: React.FC = () => {
 				{/* File Converter Mode */}
 				{currentMode === "converter" && (
 					<div className="max-w-4xl mx-auto">
+						{/* Beta Notification Banner */}
+						<div className="mb-6 p-4 text-sm text-amber-800 bg-amber-50/90 backdrop-blur-sm rounded-xl border border-amber-300/80 shadow-lg flex items-start space-x-3">
+							<AlertTriangle
+								className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5"
+								strokeWidth={2.5}
+							/>
+							<div>
+								<span className="font-semibold block text-base">Beta Feature</span>
+								<p className="text-sm">
+									The File Converter is currently in beta and under active development. 
+									Some features may not work as expected. We're working hard to improve the experience!
+								</p>
+							</div>
+						</div>
+						
 						<FileConverter />
 					</div>
 				)}
