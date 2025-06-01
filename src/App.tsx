@@ -241,14 +241,17 @@ const App: React.FC = () => {
 								strokeWidth={2.5}
 							/>
 							<div>
-								<span className="font-semibold block text-base">Beta Feature</span>
+								<span className="font-semibold block text-base">
+									Beta Feature
+								</span>
 								<p className="text-sm">
-									The File Converter is currently in beta and under active development. 
-									Some features may not work as expected. We're working hard to improve the experience!
+									The File Converter is currently in beta and under active
+									development. Some features may not work as expected. We're
+									working hard to improve the experience!
 								</p>
 							</div>
 						</div>
-						
+
 						<FileConverter />
 					</div>
 				)}
