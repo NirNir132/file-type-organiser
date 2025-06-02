@@ -3,7 +3,7 @@ import {
 	ConversionProgress,
 	ConversionResult,
 } from "../../types";
-import { formatFileSize } from "../conversionService";
+// import { convert } from "wasm-imagemagick";
 
 // Lazy load heic2any for HEIC conversions
 let heic2any: any = null;
@@ -40,8 +40,21 @@ export async function convertImage(
 			return await convertSvgImage(file, targetFormat, options, onProgress);
 		}
 
-		// For other image formats, use Canvas API
-		return await convertStandardImage(file, targetFormat, options, onProgress);
+		// For other image formats, attempt Canvas conversion first
+		const canvasResult = await convertStandardImage(
+			file,
+			targetFormat,
+			options,
+			onProgress
+		);
+
+		if (canvasResult.success) {
+			return canvasResult;
+		}
+
+		// Fallback to ImageMagick WASM for broader format support
+		// return await convertWithImageMagick(file, targetFormat, options, onProgress);
+		return canvasResult; // Return canvas result even if it failed, for now
 	} catch (error) {
 		console.error("Image conversion error:", error);
 		return {
@@ -288,3 +301,76 @@ async function convertStandardImage(
 		img.src = URL.createObjectURL(file);
 	});
 }
+
+// Comment out the entire ImageMagick function to fix the error
+/*
+async function convertWithImageMagick(
+	file: File,
+	targetFormat: string,
+	options: ConversionOptions,
+	onProgress?: (progress: ConversionProgress) => void
+): Promise<ConversionResult> {
+	try {
+		onProgress?.({
+			stage: "Loading",
+			progress: 10,
+			message: "Loading ImageMagick core...",
+		});
+
+		const inputName = `input.${file.name.split(".").pop()}`;
+		const outputName = `output.${targetFormat}`;
+
+		const arrayBuffer = await file.arrayBuffer();
+		const inputFiles = [
+			{ name: inputName, data: new Uint8Array(arrayBuffer) },
+		];
+
+		onProgress?.({
+			stage: "Converting",
+			progress: 40,
+			message: "Running convert command...",
+		});
+
+		const result = await convert({
+			inputFiles,
+			commands: [inputName, outputName],
+		});
+
+		onProgress?.({
+			stage: "Finalizing",
+			progress: 80,
+			message: "Generating output file...",
+		});
+
+		const outputFile = result.outputFiles[0];
+		const blob = new Blob([outputFile.data], { type: `image/${targetFormat}` });
+		const convertedFile = new File(
+			[blob],
+			file.name.replace(/\.[^/.]+$/, `.${targetFormat}`),
+			{ type: `image/${targetFormat}` }
+		);
+
+		onProgress?.({
+			stage: "Complete",
+			progress: 100,
+			message: "Conversion completed via ImageMagick!",
+		});
+
+		return {
+			success: true,
+			file: convertedFile,
+			originalName: file.name,
+			targetFormat,
+			fileSize: convertedFile.size,
+		};
+	} catch (error) {
+		console.error("ImageMagick conversion failed", error);
+		return {
+			success: false,
+			error: error instanceof Error ? error.message : "Unknown error",
+			originalName: file.name,
+			targetFormat,
+		};
+	}
+}
+*/

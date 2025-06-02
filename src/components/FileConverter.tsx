@@ -18,6 +18,12 @@ import {
 import { convertImage } from "../services/converters/imageConverter";
 import { convertDocument } from "../services/converters/documentConverter";
 import {
+	convertAudio,
+	convertVideo,
+} from "../services/converters/mediaConverter";
+// import { convertArchive } from "../services/converters/archiveConverter";
+import { convertSpreadsheet } from "../services/converters/spreadsheetConverter";
+import {
 	ConversionProgress,
 	ConversionResult,
 	ConversionOptions,
@@ -104,6 +110,31 @@ const FileConverter: React.FC<FileConverterProps> = ({ className = "" }) => {
 				);
 			} else if (category.name === "Documents") {
 				conversionResult = await convertDocument(
+					selectedFile,
+					targetFormat,
+					options,
+					setProgress
+				);
+			} else if (category.name === "Audio") {
+				conversionResult = await convertAudio(
+					selectedFile,
+					targetFormat,
+					options,
+					setProgress
+				);
+			} else if (category.name === "Video") {
+				conversionResult = await convertVideo(
+					selectedFile,
+					targetFormat,
+					options,
+					setProgress
+				);
+			} else if (category.name === "Archives") {
+				throw new Error(
+					"Archive conversion coming soon - dependencies being resolved"
+				);
+			} else if (category.name === "Spreadsheets") {
+				conversionResult = await convertSpreadsheet(
 					selectedFile,
 					targetFormat,
 					options,
