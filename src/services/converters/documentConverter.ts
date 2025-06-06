@@ -4,17 +4,20 @@ import {
 	ConversionResult,
 } from "../../types";
 
+// pdfjs-dist and docx will be imported dynamically.
+
+
 // Lazy load libraries
-let pdfLib: any = null;
+let pdfLibLoaded: any = null; // Renamed to avoid conflict with pdfjsLib
 let mammoth: any = null;
 let html2canvas: any = null;
 let jsPDF: any = null;
 
 async function loadPdfLib() {
-	if (!pdfLib) {
-		pdfLib = await import("pdf-lib");
+	if (!pdfLibLoaded) {
+		pdfLibLoaded = await import("pdf-lib");
 	}
-	return pdfLib;
+	return pdfLibLoaded;
 }
 
 async function loadMammoth() {
@@ -84,72 +87,155 @@ async function convertFromPdf(
 	options: ConversionOptions,
 	onProgress?: (progress: ConversionProgress) => void
 ): Promise<ConversionResult> {
-	const pdfLibModule = await loadPdfLib();
-
 	onProgress?.({
 		stage: "Loading",
-		progress: 25,
-		message: "Loading PDF document...",
+		progress: 20, // Adjusted starting progress
+		message: "Preparing PDF...",
 	});
 
-	const arrayBuffer = await file.arrayBuffer();
-	const pdfDoc = await pdfLibModule.PDFDocument.load(arrayBuffer);
-
-	onProgress?.({
-		stage: "Converting",
-		progress: 50,
-		message: "Processing PDF pages...",
-	});
+	// pdf-lib is generally used for PDF manipulation or image conversion.
+	// For text extraction or DOCX, we'll use pdf.js directly with the file.
+	// For image conversion, we might still need pdf-lib if pdfToImage relies on it.
 
 	switch (targetFormat) {
 		case "txt":
-			return await pdfToText(pdfDoc, file, onProgress);
+			return await pdfToText(file, options, onProgress); // Pass the raw file
+		case "docx":
+			return await pdfToDocxInternal(file, options, onProgress); // Pass the raw file
 		case "jpg":
 		case "png":
-			return await pdfToImage(pdfDoc, file, targetFormat, options, onProgress);
+			// If pdfToImage uses pdf-lib, it needs to load the doc itself or receive a pdf-lib doc.
+			// For this refactor, let's assume pdfToImage will handle its PDF loading if needed,
+			// or we adapt it to take `file: File`. For now, we load it here.
+			onProgress?.({ stage: "Loading", progress: 25, message: "Loading PDF for image conversion..." });
+			const pdfLibMod = await loadPdfLib(); // Ensure pdfLibLoaded is used
+			const arrBuff = await file.arrayBuffer();
+			const pdfDocForImage = await pdfLibMod.PDFDocument.load(arrBuff);
+			onProgress?.({ stage: "Converting", progress: 50, message: "Processing PDF for image..." });
+			return await pdfToImage(pdfDocForImage, file, targetFormat, options, onProgress);
 		default:
-			throw new Error(`PDF to ${targetFormat} conversion not supported`);
+			console.error(`PDF to ${targetFormat} conversion not supported`);
+			return {
+				success: false,
+				error: `PDF to ${targetFormat} conversion not supported`,
+				originalName: file.name,
+				targetFormat,
+			};
 	}
 }
 
+
+async function extractTextContentFromPdf(
+	file: File,
+	onProgress?: (progress: ConversionProgress) => void
+): Promise<string> {
+	const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.js');
+	if (typeof window !== 'undefined' && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+		pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+	}
+
+	const arrayBuffer = await file.arrayBuffer();
+
+	onProgress?.({
+		stage: "Converting",
+		progress: 5, // Progress before loading
+		message: `Loading PDF document...`,
+	});
+
+	const pdfDocument = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+	let fullText = "";
+	const totalPages = pdfDocument.numPages;
+
+	onProgress?.({
+		stage: "Converting",
+		progress: 10,
+		message: `Extracting text from ${totalPages} pages...`,
+	});
+
+	for (let i = 1; i <= totalPages; i++) {
+		const page = await pdfDocument.getPage(i);
+		const textContent = await page.getTextContent();
+
+		// Basic text item concatenation. Might need refinement for spacing, hyphenation, etc.
+		textContent.items.forEach((item: any) // TODO: Add proper type for item if available from pdfjsLib
+			=> {
+			fullText += item.str;
+			if (item.hasEOL) { // End of Line marker from pdf.js
+				fullText += "\n";
+			} else if (item.str.trim().length > 0 && !item.str.endsWith(" ")) {
+				// Add a space if the item is not empty and doesn't end with one,
+				// to prevent words from merging. This is a heuristic.
+				fullText += " ";
+			}
+		});
+		// Add a double newline after each page to simulate paragraph breaks between pages.
+		// This might need to be more sophisticated based on actual document structure.
+		if (totalPages > 1 && i < totalPages) {
+			fullText += "\n\n";
+		}
+
+		onProgress?.({
+			stage: "Converting",
+			// Progress: 10% (initial) + 80% (spread across pages) = 90% total for this part
+			progress: 10 + Math.round((i / totalPages) * 80),
+			message: `Processed page ${i}/${totalPages}...`,
+		});
+	}
+	onProgress?.({
+		stage: "Converting",
+		progress: 90,
+		message: `Text extraction complete. Finalizing...`,
+	});
+	return fullText.trim(); // Trim trailing spaces/newlines
+}
+
 async function pdfToText(
-	pdfDoc: any,
 	originalFile: File,
+	options: ConversionOptions,
 	onProgress?: (progress: ConversionProgress) => void
 ): Promise<ConversionResult> {
 	onProgress?.({
 		stage: "Converting",
-		progress: 75,
-		message: "Extracting text from PDF...",
+		progress: 0, // Start progress for this specific function
+		message: "Starting PDF to text conversion...",
 	});
 
-	// Note: pdf-lib doesn't have built-in text extraction
-	// This is a simplified implementation - in a real app you'd use pdf.js
-	const textContent =
-		"PDF text extraction requires additional libraries. This is a placeholder text.";
+	try {
+		const textContent = await extractTextContentFromPdf(originalFile, onProgress);
 
-	const blob = new Blob([textContent], { type: "text/plain" });
-	const convertedFile = new File(
-		[blob],
-		originalFile.name.replace(/\.[^/.]+$/, ".txt"),
-		{ type: "text/plain" }
-	);
+		const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
+		const convertedFile = new File(
+			[blob],
+			originalFile.name.replace(/\.[^/.]+$/, ".txt"),
+			{ type: "text/plain;charset=utf-8" }
+		);
 
-	onProgress?.({
-		stage: "Complete",
-		progress: 100,
-		message: "Text extraction completed!",
-	});
+		onProgress?.({
+			stage: "Complete",
+			progress: 100,
+			message: "PDF to .txt conversion completed!",
+		});
 
-	return {
-		success: true,
-		file: convertedFile,
-		originalName: originalFile.name,
-		targetFormat: "txt",
-		fileSize: convertedFile.size,
-	};
+		return {
+			success: true,
+			file: convertedFile,
+			originalName: originalFile.name,
+			targetFormat: "txt",
+			fileSize: convertedFile.size,
+		};
+	} catch (error) {
+		console.error("PDF to Text conversion error:", error);
+		onProgress?.({ stage: "Error", progress: 100, message: "PDF to Text failed." });
+		return {
+			success: false,
+			error: `PDF to Text failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+			originalName: originalFile.name,
+			targetFormat: "txt",
+		};
+	}
 }
 
+// pdfToImage still expects pdfDoc from pdf-lib. Ensure this is handled if image conversion is triggered.
 async function pdfToImage(
 	pdfDoc: any,
 	originalFile: File,
@@ -157,6 +243,9 @@ async function pdfToImage(
 	options: ConversionOptions,
 	onProgress?: (progress: ConversionProgress) => void
 ): Promise<ConversionResult> {
+
+	// This function currently uses pdf-lib's pdfDoc.
+	// If called from the refactored convertFromPdf, ensure pdfDoc is loaded correctly with pdf-lib.
 	onProgress?.({
 		stage: "Converting",
 		progress: 75,
@@ -314,25 +403,39 @@ async function wordToPdfAdvanced(
 				"p[style-name='Heading 2'] => h2",
 				"p[style-name='Heading 3'] => h3",
 				"p[style-name='Heading 4'] => h4",
+				"p[style-name='Heading 5'] => h5", // Added h5
+				"p[style-name='Heading 6'] => h6", // Added h6
 				"r[style-name='Strong'] => strong",
 				"r[style-name='Emphasis'] => em",
 				"r[style-name='Intense Emphasis'] => strong em",
-				"p[style-name='List Paragraph'] => li",
+				"p[style-name='List Paragraph'] => li", // Ensure this maps to li
+				"p[style-name='Block Text'] => pre", // Map block text to pre for preformatted text
+				"p[style-name='Comment Text'] => p.comment-text", // Example of mapping a custom style
 				"p[style-name='Quote'] => blockquote p",
-				"table => table.word-table",
+				"table => table.word-table", // Basic table mapping
+				"u => u", // Underline
+				// More specific mappings can be added if certain Word styles are common
+				// e.g., "p[style-name='Caption'] => p.caption",
 			],
-			includeDefaultStyleMap: true,
+			includeDefaultStyleMap: true, // Keep this true to include Mammoth's defaults
 			convertImage: mammothModule.images.imgElement(function (image: any) {
 				return image.read("base64").then(function (imageBuffer: any) {
 					return {
 						src: "data:" + image.contentType + ";base64," + imageBuffer,
 					};
+				}).catch(function(error: any) {
+					console.warn("Mammoth: Failed to convert an image.", error);
+					// Return a placeholder or skip the image
+					return { src: "" }; // Could be an empty string or a placeholder image data URI
 				});
 			}),
 		});
 
 		const htmlContent = result.value;
 		const messages = result.messages;
+
+		// Log the HTML output from mammoth.convertToHtml
+		console.log("Mammoth HTML output:", htmlContent);
 
 		// Log any conversion warnings/errors for debugging
 		if (messages.length > 0) {
@@ -351,14 +454,22 @@ async function wordToPdfAdvanced(
 			options,
 			onProgress
 		);
-	} catch (error) {
-		console.error("Advanced Word to PDF conversion failed:", error);
-		// Fallback to simple conversion
-		onProgress?.({
-			stage: "Converting",
-			progress: 30,
-			message: "Falling back to basic conversion...",
-		});
+	} catch (conversionError) { // Catching errors from htmlToPdfWithJsPDF or mammoth
+		if (conversionError instanceof Error && conversionError.message.includes("jsPDF")) {
+			console.error("Advanced Word to PDF conversion failed specifically during jsPDF processing:", conversionError);
+			onProgress?.({
+				stage: "Converting",
+				progress: 30,
+				message: "Falling back to basic conversion due to jsPDF error...",
+			});
+		} else {
+			console.error("Advanced Word to PDF conversion failed (Mammoth or other HTML processing error):", conversionError);
+			onProgress?.({
+				stage: "Converting",
+				progress: 30,
+				message: "Falling back to basic conversion due to HTML processing error...",
+			});
+		}
 		return await wordToPdfBasic(
 			mammothModule,
 			arrayBuffer,
@@ -381,12 +492,95 @@ async function wordToPdfBasic(
 		progress: 50,
 		message: "Basic Word to PDF conversion...",
 	});
-
-	const result = await mammothModule.convertToHtml({ arrayBuffer });
-	const htmlContent = result.value;
-
-	return await htmlToPdf(htmlContent, originalFile, options, onProgress);
+	console.log("Attempting basic Word to PDF conversion for:", originalFile.name);
+	try {
+		const result = await mammothModule.convertToHtml({ arrayBuffer });
+		const htmlContent = result.value;
+		console.log("Basic conversion HTML content generated for fallback.");
+		return await htmlToPdf(htmlContent, originalFile, options, onProgress); // Assuming htmlToPdf is the basic canvas-based one
+	} catch (error) {
+		console.error("Basic Word to PDF conversion (mammoth part during fallback) failed:", error);
+		// If even basic mammoth conversion fails, we need to return a failure result
+		return {
+			success: false,
+			error: `Fallback basic conversion also failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+			originalName: originalFile.name,
+			targetFormat: "pdf",
+		};
+	}
 }
+
+async function pdfToDocxInternal(
+	file: File,
+	options: ConversionOptions,
+	onProgress?: (progress: ConversionProgress) => void
+): Promise<ConversionResult> {
+	const DocxModule = await import('docx');
+	onProgress?.({
+		stage: "Converting",
+		progress: 0,
+		message: "Starting PDF to DOCX conversion...",
+	});
+
+	try {
+		const textContent = await extractTextContentFromPdf(file, onProgress); // Uses 0-90% of progress
+
+		onProgress?.({
+			stage: "Converting",
+			progress: 90,
+			message: "Creating DOCX structure...",
+		});
+
+		const paragraphs = textContent.split("\n").map(
+			(line) =>
+				new DocxModule.Paragraph({ // Changed to DocxModule.Paragraph
+					children: [new DocxModule.TextRun(line)], // Changed to DocxModule.TextRun
+				})
+		);
+
+		const document = new DocxModule.Document({ // Changed to DocxModule.Document
+			sections: [
+				{
+					properties: {}, // Default properties
+					children: paragraphs,
+				},
+			],
+		});
+
+		const blob = await DocxModule.Packer.toBlob(document); // Changed to DocxModule.Packer
+		const convertedFile = new File(
+			[blob],
+			file.name.replace(/\.[^/.]+$/, ".docx"),
+			{
+				type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+			}
+		);
+
+		onProgress?.({
+			stage: "Complete",
+			progress: 100,
+			message: "PDF to DOCX conversion completed!",
+		});
+
+		return {
+			success: true,
+			file: convertedFile,
+			originalName: file.name,
+			targetFormat: "docx",
+			fileSize: convertedFile.size,
+		};
+	} catch (error) {
+		console.error("PDF to DOCX conversion error:", error);
+		onProgress?.({ stage: "Error", progress: 100, message: "PDF to DOCX failed." });
+		return {
+			success: false,
+			error: `PDF to DOCX failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+			originalName: file.name,
+			targetFormat: "docx",
+		};
+	}
+}
+
 
 async function htmlToPdfWithJsPDF(
 	htmlContent: string,
@@ -404,14 +598,20 @@ async function htmlToPdfWithJsPDF(
 
 	// Create new jsPDF instance
 	const pdf = new jsPDFModule({
-		orientation: "portrait",
-		unit: "pt",
-		format: "a4",
-		compress: true,
+		orientation: "portrait", // Standard portrait orientation
+		unit: "pt", // Points are good for precision
+		format: "a4", // Default to A4, could be made an option
+		compress: true, // Enable PDF compression
+		// precision: 16, // Default is 16, can be adjusted if needed
+		// putOnlyUsedFonts: true, // Potentially reduces file size
+		// hotfixes: ["px_scaling"], // May help with some scaling issues
 	});
 
 	// Create a properly styled HTML document
 	const styledHtml = createAdvancedStyledHtml(htmlContent);
+
+	// Log the styledHtml before passing it to jsPDF
+	console.log("Styled HTML for jsPDF:", styledHtml);
 
 	onProgress?.({
 		stage: "Converting",
@@ -423,14 +623,24 @@ async function htmlToPdfWithJsPDF(
 	const tempDiv = document.createElement("div");
 	tempDiv.innerHTML = styledHtml;
 	tempDiv.style.position = "absolute";
-	tempDiv.style.left = "-9999px";
+	tempDiv.style.left = "-9999px"; // Keep it off-screen
 	tempDiv.style.top = "0";
-	tempDiv.style.width = "595px"; // A4 width in pixels at 72 DPI
-	tempDiv.style.fontFamily = "Arial, sans-serif";
-	tempDiv.style.fontSize = "12px";
-	tempDiv.style.lineHeight = "1.4";
-	tempDiv.style.color = "#000000";
+	tempDiv.style.width = "595pt"; // A4 width in points, matching jsPDF unit and windowWidth
+	// tempDiv.style.fontFamily = "Arial, sans-serif"; // Remove - should be handled by styledHtml's body
+	// tempDiv.style.fontSize = "12px"; // Remove - should be handled by styledHtml's body
+	// tempDiv.style.lineHeight = "1.4"; // Remove - should be handled by styledHtml's body
+	// tempDiv.style.color = "#000000"; // Remove - should be handled by styledHtml's body
+	tempDiv.style.background = "white"; // Ensure background for html2canvas if not set in body
 	document.body.appendChild(tempDiv);
+
+	// Log the dimensions and properties of the tempDiv
+	console.log("tempDiv properties:", {
+		width: tempDiv.style.width,
+		position: tempDiv.style.position,
+		left: tempDiv.style.left,
+		top: tempDiv.style.top,
+		background: tempDiv.style.background,
+	});
 
 	try {
 		onProgress?.({
@@ -442,13 +652,27 @@ async function htmlToPdfWithJsPDF(
 		await pdf.html(tempDiv, {
 			callback: function (doc: any) {
 				// PDF generation complete
+				// doc.putTotalPages('___total_pages___'); // Example for total pages if needed
 			},
-			x: 40, // Left margin
-			y: 40, // Top margin
-			width: 515, // Content width (A4 width - margins)
-			windowWidth: 595, // Window width for rendering
-			margin: [40, 40, 40, 40], // Top, Right, Bottom, Left margins
-			autoPaging: "text",
+			x: 36, // Left margin (0.5 inch for A4 = 36pt)
+			y: 36, // Top margin (0.5 inch)
+			width: 523, // Content width (A4 width 595pt - 2*36pt margins)
+			windowWidth: 595, // A4 width in points, important for html2canvas scaling
+			margin: { // More explicit margin object
+				top: 36,
+				right: 36,
+				bottom: 36,
+				left: 36,
+			},
+			autoPaging: "text", // 'text' is generally good for flowing content
+			// autoPaging: 'slice', // Alternative: might behave differently with complex layouts
+			// html2canvas: {
+			//   scale: 2, // Default scale for jsPDF.html, higher can improve image quality but increase size
+			//   logging: true, // Enable html2canvas logging for debugging if needed
+			//   useCORS: true, // Important for external images
+			//   dpi: 144 // (scale * 72) - affects rasterized elements
+			//   // letterRendering: true, // Might improve text rendering in some cases
+			// },
 		});
 
 		onProgress?.({
@@ -480,7 +704,8 @@ async function htmlToPdfWithJsPDF(
 			fileSize: convertedFile.size,
 		};
 	} catch (error) {
-		console.error("jsPDF conversion error:", error);
+		// Log any errors or exceptions caught during the jsPDF.html() conversion
+		console.error("jsPDF.html() conversion error:", error);
 		throw new Error(
 			`jsPDF conversion failed: ${
 				error instanceof Error ? error.message : "Unknown error"
@@ -505,12 +730,12 @@ function createAdvancedStyledHtml(content: string): string {
         }
         
         body {
-          font-family: 'Calibri', 'Arial', sans-serif;
-          font-size: 12px;
-          line-height: 1.4;
+          font-family: 'Calibri', 'Times New Roman', 'Arial', sans-serif; /* Added Times New Roman and ensured Arial is a fallback */
+          font-size: 12pt; /* Common default size */
+          line-height: 1.5; /* Improved line spacing */
           color: #000000;
           background: white;
-          padding: 0;
+          padding: 0; /* Margins will be handled by jsPDF options */
         }
         
         .content {
@@ -519,71 +744,88 @@ function createAdvancedStyledHtml(content: string): string {
         }
         
         h1, h1.title {
-          font-size: 18px;
+          font-size: 20pt; /* Adjusted for better hierarchy */
           font-weight: bold;
-          margin: 0 0 16px 0;
+          margin: 24pt 0 12pt 0; /* Consistent heading margins */
           color: #000000;
           line-height: 1.2;
+          page-break-after: avoid;
         }
         
         h2 {
-          font-size: 16px;
+          font-size: 16pt; /* Adjusted for better hierarchy */
           font-weight: bold;
-          margin: 20px 0 12px 0;
+          margin: 18pt 0 10pt 0; /* Consistent heading margins */
           color: #000000;
           line-height: 1.2;
+          page-break-after: avoid;
         }
         
         h3 {
-          font-size: 14px;
+          font-size: 14pt; /* Adjusted for better hierarchy */
           font-weight: bold;
-          margin: 16px 0 8px 0;
+          margin: 16pt 0 8pt 0; /* Consistent heading margins */
           color: #000000;
           line-height: 1.2;
+          page-break-after: avoid;
         }
         
         h4 {
-          font-size: 13px;
+          font-size: 12pt; /* Adjusted for better hierarchy */
           font-weight: bold;
-          margin: 12px 0 6px 0;
+          margin: 12pt 0 6pt 0; /* Consistent heading margins */
           color: #000000;
           line-height: 1.2;
+          page-break-after: avoid;
         }
         
         p {
-          margin: 0 0 12px 0;
-          line-height: 1.4;
+          margin: 0 0 10pt 0; /* Consistent paragraph spacing */
+          line-height: 1.5;
           text-align: left;
         }
         
         ul, ol {
-          margin: 0 0 12px 20px;
-          padding-left: 0;
+          margin: 0 0 10pt 25pt; /* Adjusted indentation */
+          padding-left: 15pt; /* Ensure space for bullets/numbers */
         }
         
         li {
-          margin: 0 0 6px 0;
-          line-height: 1.4;
+          margin: 0 0 5pt 0; /* Consistent list item spacing */
+          line-height: 1.5;
         }
-        
+
+        ul li { list-style-type: disc; } /* Default bullet */
+        ol li { list-style-type: decimal; } /* Default numbering */
+
+        /* More specific list styling if Mammoth preserves it */
+        ul[style*="list-style-type: square"] li { list-style-type: square; }
+        ul[style*="list-style-type: circle"] li { list-style-type: circle; }
+        ol[style*="list-style-type: lower-roman"] li { list-style-type: lower-roman; }
+        ol[style*="list-style-type: upper-roman"] li { list-style-type: upper-roman; }
+        ol[style*="list-style-type: lower-alpha"] li { list-style-type: lower-alpha; }
+        ol[style*="list-style-type: upper-alpha"] li { list-style-type: upper-alpha; }
+
         table, table.word-table {
-          width: 100%;
+          width: auto; /* Let tables size naturally, or 100% if specified by Word */
           border-collapse: collapse;
-          margin: 12px 0;
-          font-size: 11px;
+          margin: 12pt 0;
+          font-size: 10pt; /* Slightly smaller for tables */
+          page-break-inside: avoid; /* Try to keep tables on one page */
         }
         
         table th, table td {
-          border: 1px solid #000000;
-          padding: 6px 8px;
-          text-align: left;
+          border: 1px solid #333333; /* Darker border for better visibility */
+          padding: 5pt 7pt; /* Adjusted cell padding */
+          text-align: left; /* Default, can be overridden by Word styles */
           vertical-align: top;
           line-height: 1.3;
         }
         
         table th {
-          background-color: #f0f0f0;
+          background-color: #e0e0e0; /* Lighter gray for header */
           font-weight: bold;
+          text-align: center; /* Common for headers */
         }
         
         strong, b {
@@ -624,6 +866,10 @@ function createAdvancedStyledHtml(content: string): string {
           height: auto;
           margin: 8px 0;
         }
+
+        .page-break-before {
+          page-break-before: always;
+        }
         
         /* Special styling for checkmarks and targets */
         .checkmark::before {
@@ -636,18 +882,17 @@ function createAdvancedStyledHtml(content: string): string {
           content: "🎯 ";
         }
         
-        /* Handle lists better */
+        /* Handle lists better - adjusted margins */
         p + ul, p + ol {
-          margin-top: -6px;
+          margin-top: 0; /* Let paragraph margin handle spacing */
         }
         
-        /* Better spacing for headers after content */
-        p + h1, p + h2, p + h3, p + h4,
-        ul + h1, ul + h2, ul + h3, ul + h4,
-        ol + h1, ol + h2, ol + h3, ol + h4,
-        table + h1, table + h2, table + h3, table + h4 {
-          margin-top: 24px;
-        }
+        /* Better spacing for headers after content - adjusted margins */
+        p + h1, ul + h1, ol + h1, table + h1 { margin-top: 24pt; }
+        p + h2, ul + h2, ol + h2, table + h2 { margin-top: 18pt; }
+        p + h3, ul + h3, ol + h3, table + h3 { margin-top: 16pt; }
+        p + h4, ul + h4, ol + h4, table + h4 { margin-top: 12pt; }
+
       </style>
     </head>
     <body>
