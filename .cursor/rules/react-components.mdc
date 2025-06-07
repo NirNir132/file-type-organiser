@@ -3,3 +3,62 @@ description:
 globs:
 alwaysApply: false
 ---
+# React Component Guidelines
+
+## Component Structure
+
+Every React component should follow this pattern:
+
+```typescript
+import React from 'react';
+// Import types
+// Import hooks
+// Import utilities
+// Import other components
+// Import styles/assets
+
+interface ComponentNameProps {
+  // Define all props with TypeScript interfaces
+}
+
+export const ComponentName: React.FC<ComponentNameProps> = ({ props }) => {
+  // Hooks at the top
+  // Event handlers
+  // Helper functions
+  
+  return (
+    <div className="component-wrapper">
+      {/* Component JSX */}
+    </div>
+  );
+};
+```
+
+## Naming Conventions
+
+- Components: PascalCase (e.g., `FileUploader`, `ConversionProgress`)
+- Props interfaces: ComponentNameProps
+- Event handlers: handleActionName (e.g., `handleFileUpload`)
+- Custom hooks: use prefix (e.g., `useFileProcessing`)
+
+## State Management
+
+- Use `useState` for local component state
+- Use `useEffect` sparingly and with proper cleanup
+- Prefer derived state over redundant state
+- Keep state as close to where it's used as possible
+
+## File Organization Best Practices
+
+When working with file manipulation:
+- Always validate file types before processing
+- Provide clear user feedback during operations
+- Handle errors gracefully with user-friendly messages
+- Use proper loading states for async operations
+
+## UI/UX Patterns
+
+- All interactive elements must have hover states
+- Use Tailwind classes for consistent spacing: `p-4`, `gap-4`, `space-y-4`
+- Maintain consistent color scheme using Tailwind's color palette
+- Ensure all actions have visual feedback (loading spinners, progress bars)

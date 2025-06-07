@@ -3,3 +3,93 @@ description:
 globs:
 alwaysApply: false
 ---
+# Development Workflow Guidelines
+
+## Git Workflow
+
+### Commit Messages
+Use conventional commit format:
+```
+feat: add file conversion progress indicator
+fix: resolve drag-and-drop issue on mobile
+docs: update README with new features
+style: format code with prettier
+refactor: extract file validation logic
+test: add unit tests for file converter
+chore: update dependencies
+```
+
+### Branch Naming
+- Feature: `feature/file-converter-ui`
+- Bugfix: `fix/upload-validation`
+- Hotfix: `hotfix/critical-security-patch`
+
+## Development Process
+
+1. **Before Starting Work**
+   - Pull latest changes from main
+   - Create a new branch for your feature/fix
+   - Review existing code and understand the context
+
+2. **During Development**
+   - Run `npm run dev` to start the development server
+   - Test changes in multiple browsers
+   - Ensure responsive design works on all screen sizes
+   - Check console for any errors or warnings
+
+3. **Before Committing**
+   - Run TypeScript type checking
+   - Ensure no linting errors
+   - Test all affected functionality
+   - Update relevant documentation
+
+## Code Quality Checklist
+
+- [ ] No TypeScript errors
+- [ ] No console errors or warnings
+- [ ] Responsive design tested
+- [ ] Error handling implemented
+- [ ] Loading states added for async operations
+- [ ] Accessibility requirements met
+- [ ] Performance optimized (no unnecessary re-renders)
+
+## Testing Guidelines
+
+1. **Manual Testing**
+   - Test with various file types and sizes
+   - Test error scenarios (invalid files, network errors)
+   - Test on different devices and browsers
+   - Verify all user interactions work as expected
+
+2. **Edge Cases to Consider**
+   - Empty states
+   - Maximum file size limits
+   - Concurrent file uploads
+   - Browser compatibility
+   - Slow network conditions
+
+## Deployment Process
+
+Reference: [deploy.ps1](mdc:deploy.ps1)
+
+1. Build the production bundle: `npm run build`
+2. Test the production build locally
+3. Deploy to GitHub Pages using the deployment script
+4. Verify deployment at the live URL
+5. Test critical paths on production
+
+## Performance Optimization
+
+- Lazy load components when appropriate
+- Optimize images and assets
+- Minimize bundle size
+- Use React.memo for expensive components
+- Implement virtual scrolling for large lists
+
+## Documentation
+
+Always update:
+- README.md for new features
+- Inline code comments for complex logic
+- Component prop documentation
+- API documentation for utilities

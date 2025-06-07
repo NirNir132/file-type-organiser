@@ -3,3 +3,89 @@ description:
 globs:
 alwaysApply: false
 ---
+# Beta Features Implementation
+
+## Feature Flag Pattern
+
+When implementing beta features, use a consistent pattern:
+
+```typescript
+// In your component
+const isFeatureEnabled = process.env.VITE_ENABLE_FEATURE === 'true' || betaToggleState;
+
+// Or use a feature flag service
+const features = {
+  fileConverter: true, // Beta feature
+  advancedFilters: false, // Coming soon
+  batchProcessing: false, // In development
+};
+```
+
+## Beta Feature UI Requirements
+
+1. **Visual Indicators**
+   - Add a "Beta" badge to beta features
+   - Use consistent styling: `bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded`
+
+2. **User Notification**
+   - Show a dismissible banner when users enable beta features
+   - Clearly communicate that the feature is in development
+   - Provide a feedback mechanism
+
+Example implementation:
+```jsx
+{showBetaNotification && (
+  <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+    <div className="flex items-start">
+      <div className="flex-shrink-0">
+        <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+        </svg>
+      </div>
+      <div className="ml-3">
+        <p className="text-sm text-yellow-700">
+          <strong>Beta Feature:</strong> This feature is still in development and may not work as expected.
+        </p>
+      </div>
+    </div>
+  </div>
+)}
+```
+
+## Beta Feature Development Guidelines
+
+1. **Isolation**: Keep beta code isolated from stable features
+2. **Fallbacks**: Always provide fallback behavior
+3. **Monitoring**: Add extra logging for beta features
+4. **Documentation**: Clearly mark beta features in code comments
+
+```typescript
+/**
+ * BETA FEATURE: File Converter
+ * Status: In active development
+ * Known issues: 
+ * - Large files may timeout
+ * - Some formats not yet supported
+ * TODO: Add progress tracking, improve error handling
+ */
+```
+
+## Feature Rollout Strategy
+
+1. **Internal Testing**: Test thoroughly before exposing to users
+2. **Gradual Rollout**: Consider percentage-based rollouts
+3. **Kill Switch**: Implement ability to disable features remotely
+4. **Metrics**: Track usage and error rates
+
+## User Feedback Collection
+
+For beta features, implement feedback collection:
+
+```jsx
+<button 
+  onClick={() => openFeedbackModal('file-converter-beta')}
+  className="text-sm text-blue-600 hover:text-blue-800"
+>
+  Send Feedback
+</button>
+```

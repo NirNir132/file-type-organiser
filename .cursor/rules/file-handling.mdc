@@ -3,3 +3,78 @@ description:
 globs:
 alwaysApply: false
 ---
+# File Handling Best Practices
+
+## File Validation
+
+Always validate files before processing:
+
+```typescript
+// Check file size (e.g., max 50MB)
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB in bytes
+if (file.size > MAX_FILE_SIZE) {
+  throw new Error('File size exceeds 50MB limit');
+}
+
+// Validate file types
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'application/pdf', 'text/plain'];
+if (!ALLOWED_TYPES.includes(file.type)) {
+  throw new Error(`File type ${file.type} is not supported`);
+}
+```
+
+## Error Handling
+
+Implement comprehensive error handling for all file operations:
+
+```typescript
+try {
+  // File operation
+} catch (error) {
+  console.error('File operation failed:', error);
+  // Show user-friendly error message
+  setError('Failed to process file. Please try again.');
+}
+```
+
+## File Processing Patterns
+
+1. **Chunked Processing**: For large files, process in chunks to avoid blocking the UI
+2. **Progress Tracking**: Always provide progress feedback for long operations
+3. **Cancellation**: Allow users to cancel ongoing operations
+4. **Memory Management**: Clean up file references and URLs when done
+
+```typescript
+// Example: Clean up object URLs
+useEffect(() => {
+  return () => {
+    if (objectUrl) {
+      URL.revokeObjectURL(objectUrl);
+    }
+  };
+}, [objectUrl]);
+```
+
+## Security Considerations
+
+1. Never trust file extensions alone - validate MIME types
+2. Sanitize file names before display or storage
+3. Implement virus scanning for uploaded files if possible
+4. Use Content Security Policy headers
+5. Validate file contents, not just metadata
+
+## Performance Optimization
+
+1. Use Web Workers for heavy file processing
+2. Implement lazy loading for file previews
+3. Cache processed results when appropriate
+4. Use efficient data structures for file metadata
+
+## User Experience
+
+- Show clear file size limits
+- Display supported file formats prominently
+- Provide drag-and-drop visual feedback
+- Show processing status with progress bars
+- Allow batch operations for multiple files
+- Implement undo/redo where applicable

@@ -3,3 +3,37 @@ description:
 globs:
 alwaysApply: false
 ---
+# File Type Organizer Architecture Guidelines
+
+This is a React-based file organizer and converter application built with TypeScript, Vite, and Tailwind CSS.
+
+## Project Structure
+
+- Main entry point: [index.html](mdc:index.html)
+- Application root: [src/App.tsx](mdc:src/App.tsx)
+- Components live in `src/components/`
+- Utilities and helpers in `src/utils/`
+- Type definitions in `src/types/`
+
+## Core Features
+
+1. **File Organization**: Sort and organize files by type, date, or custom rules
+2. **File Conversion**: Convert between different file formats (Beta feature)
+3. **Drag & Drop Interface**: Intuitive file upload and management
+4. **Real-time Processing**: Handle file operations without page refresh
+
+## Technology Stack
+
+- **Framework**: React 18 with TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS
+- **State Management**: React hooks (useState, useEffect)
+- **File Handling**: Native File API and custom utilities
+
+## Development Principles
+
+1. Keep components modular and reusable
+2. Use TypeScript for type safety throughout the application
+3. Follow React best practices and hooks patterns
+4. Ensure responsive design for all screen sizes
+5. Prioritize user experience with clear feedback and intuitive UI
