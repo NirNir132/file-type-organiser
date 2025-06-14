@@ -157,8 +157,7 @@ async function extractTextContentFromPdf(
 		const textContent = await page.getTextContent();
 
 		// Basic text item concatenation. Might need refinement for spacing, hyphenation, etc.
-		textContent.items.forEach((item: any) // TODO: Add proper type for item if available from pdfjsLib
-			=> {
+		textContent.items.forEach((item: any) => { // TODO: Add proper type for item if available from pdfjsLib
 			fullText += item.str;
 			if (item.hasEOL) { // End of Line marker from pdf.js
 				fullText += "\n";
