@@ -7,10 +7,14 @@ import { TextEncoder, TextDecoder } from 'util';
 // Jest should automatically pick this up.
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.js';
 
-import mammoth from 'mammoth'; // Import to access the mock
+// Import TextEncoder/TextDecoder for mockFile (already present from previous merge)
+// import { TextEncoder, TextDecoder } from 'util'; // This was already there
 
-// Mock mammoth
+// Import and mock mammoth
+import * as mammoth from 'mammoth'; // Import as namespace
+
 jest.mock("mammoth", () => ({
+  __esModule: true, // For ES module with named exports
   extractRawText: jest.fn().mockResolvedValue({ value: 'Default Mocked Word text' }),
   convertToHtml: jest.fn().mockResolvedValue({ value: '<p>Default Mocked Word HTML</p>', messages: [] }),
   images: {
@@ -20,7 +24,8 @@ jest.mock("mammoth", () => ({
         read: jest.fn().mockResolvedValue(image.buffer || "base64imagedata")
       });
     })
-  }
+  },
+  // Add any other specific functions from mammoth that are directly imported/used by the SUT
 }));
 
 // Mock jspdf

@@ -15,6 +15,12 @@ module.exports = {
   //   // Example for handling .js extensions in ESM imports if your project uses them
   //   // '^(\.{1,2}/.*)\.js$': '$1',
   // },
+  moduleNameMapper: {
+    '^jszip$': '<rootDir>/__mocks__/jszip.js',
+    '^tar-js$': '<rootDir>/__mocks__/tar-js.js', // Explicitly map tar-js to its manual mock
+    // Mock CSS/SCSS modules if components are ever tested, less relevant for service tests
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+  },
   verbose: true,
   clearMocks: true,
   coverageDirectory: 'coverage',
