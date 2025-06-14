@@ -21,7 +21,7 @@ import {
 	convertAudio,
 	convertVideo,
 } from "../services/converters/mediaConverter";
-// import { convertArchive } from "../services/converters/archiveConverter";
+import { convertArchive } from "../services/converters/archiveConverter";
 import { convertSpreadsheet } from "../services/converters/spreadsheetConverter";
 import {
 	ConversionProgress,
@@ -130,8 +130,14 @@ const FileConverter: React.FC<FileConverterProps> = ({ className = "" }) => {
 					setProgress
 				);
 			} else if (category.name === "Archives") {
-				throw new Error(
-					"Archive conversion coming soon - dependencies being resolved"
+				// throw new Error(
+				// 	"Archive conversion coming soon - dependencies being resolved"
+				// );
+				conversionResult = await convertArchive(
+					selectedFile,
+					targetFormat,
+					options,
+					setProgress
 				);
 			} else if (category.name === "Spreadsheets") {
 				conversionResult = await convertSpreadsheet(

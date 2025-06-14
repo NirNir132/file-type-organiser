@@ -106,13 +106,9 @@ async function convertFromPdf(
 		case "png":
 			// If pdfToImage uses pdf-lib, it needs to load the doc itself or receive a pdf-lib doc.
 			// For this refactor, let's assume pdfToImage will handle its PDF loading if needed,
-			// or we adapt it to take `file: File`. For now, we load it here.
-			onProgress?.({ stage: "Loading", progress: 25, message: "Loading PDF for image conversion..." });
-			const pdfLibMod = await loadPdfLib(); // Ensure pdfLibLoaded is used
-			const arrBuff = await file.arrayBuffer();
-			const pdfDocForImage = await pdfLibMod.PDFDocument.load(arrBuff);
-			onProgress?.({ stage: "Converting", progress: 50, message: "Processing PDF for image..." });
-			return await pdfToImage(pdfDocForImage, file, targetFormat, options, onProgress);
+			// For this refactor, pdfToImage will handle its PDF loading using pdf.js
+			onProgress?.({ stage: "Converting", progress: 40, message: "Preparing PDF for image conversion..." });
+			return await pdfToImage(file, targetFormat, options, onProgress); // Pass the file directly
 		default:
 			console.error(`PDF to ${targetFormat} conversion not supported`);
 			return {
@@ -235,74 +231,135 @@ async function pdfToText(
 	}
 }
 
-// pdfToImage still expects pdfDoc from pdf-lib. Ensure this is handled if image conversion is triggered.
 async function pdfToImage(
-	pdfDoc: any,
-	originalFile: File,
+	originalFile: File, // Changed: takes the original File object
 	targetFormat: string,
 	options: ConversionOptions,
 	onProgress?: (progress: ConversionProgress) => void
 ): Promise<ConversionResult> {
-
-	// This function currently uses pdf-lib's pdfDoc.
-	// If called from the refactored convertFromPdf, ensure pdfDoc is loaded correctly with pdf-lib.
 	onProgress?.({
-		stage: "Converting",
-		progress: 75,
-		message: "Converting PDF to image...",
+		stage: "Loading",
+		progress: 10,
+		message: "Loading PDF.js library...",
 	});
 
-	// This is a simplified implementation
-	// In a real app, you'd use pdf.js to render pages to canvas
-	const canvas = document.createElement("canvas");
-	const ctx = canvas.getContext("2d")!;
+	const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.js');
+	if (typeof window !== 'undefined' && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+		pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+	}
 
-	canvas.width = options.width || 800;
-	canvas.height = options.height || 600;
+	const arrayBuffer = await originalFile.arrayBuffer();
 
-	ctx.fillStyle = "white";
-	ctx.fillRect(0, 0, canvas.width, canvas.height);
-	ctx.fillStyle = "black";
-	ctx.font = "20px Arial";
-	ctx.fillText("PDF converted to image", 50, 50);
-	ctx.fillText("(Requires pdf.js for full implementation)", 50, 80);
-
-	return new Promise((resolve) => {
-		canvas.toBlob(
-			(blob) => {
-				if (blob) {
-					const convertedFile = new File(
-						[blob],
-						originalFile.name.replace(/\.[^/.]+$/, `.${targetFormat}`),
-						{ type: `image/${targetFormat}` }
-					);
-
-					onProgress?.({
-						stage: "Complete",
-						progress: 100,
-						message: "PDF to image conversion completed!",
-					});
-
-					resolve({
-						success: true,
-						file: convertedFile,
-						originalName: originalFile.name,
-						targetFormat,
-						fileSize: convertedFile.size,
-					});
-				} else {
-					resolve({
-						success: false,
-						error: "Failed to convert PDF to image",
-						originalName: originalFile.name,
-						targetFormat,
-					});
-				}
-			},
-			`image/${targetFormat}`,
-			options.quality || 0.8
-		);
+	onProgress?.({
+		stage: "Loading",
+		progress: 25,
+		message: "Parsing PDF document...",
 	});
+
+	try {
+		const pdfDocument = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+		// For now, convert only the first page
+		const pageNumber = 1;
+		if (pageNumber > pdfDocument.numPages) {
+			throw new Error(`Page ${pageNumber} does not exist in PDF.`);
+		}
+
+		onProgress?.({
+			stage: "Converting",
+			progress: 50,
+			message: `Loading page ${pageNumber}...`,
+		});
+
+		const page = await pdfDocument.getPage(pageNumber);
+		const scale = typeof options.quality === 'number' && options.quality > 0 && options.quality <= 5 ? options.quality : 1.5; // Use quality as scale, default 1.5
+		const viewport = page.getViewport({ scale });
+
+		const canvas = document.createElement("canvas");
+		const ctx = canvas.getContext("2d");
+		if (!ctx) {
+			throw new Error("Could not get canvas context");
+		}
+
+		canvas.width = options.width || viewport.width;
+		canvas.height = options.height || viewport.height;
+
+		// If custom dimensions are provided, adjust viewport and scale to fit
+		let renderViewport = viewport;
+		if (options.width || options.height) {
+			const customScaleX = (options.width || canvas.width) / viewport.width;
+			const customScaleY = (options.height || canvas.height) / viewport.height;
+			const actualScale = Math.min(customScaleX, customScaleY);
+			renderViewport = page.getViewport({ scale: viewport.scale * actualScale });
+			canvas.width = renderViewport.width; // Update canvas width to match adjusted viewport
+			canvas.height = renderViewport.height; // Update canvas height to match adjusted viewport
+		}
+
+
+		onProgress?.({
+			stage: "Converting",
+			progress: 75,
+			message: `Rendering page ${pageNumber} to image...`,
+		});
+
+		// Ensure a white background for JPGs, otherwise transparent
+		if (targetFormat.toLowerCase() === 'jpg' || targetFormat.toLowerCase() === 'jpeg') {
+			ctx.fillStyle = 'white';
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+		}
+
+
+		await page.render({ canvasContext: ctx, viewport: renderViewport }).promise;
+
+		return new Promise((resolve) => {
+			canvas.toBlob(
+				(blob) => {
+					if (blob) {
+						const convertedFile = new File(
+							[blob],
+							originalFile.name.replace(/\.[^/.]+$/, `.${targetFormat}`),
+							{ type: `image/${targetFormat}` }
+						);
+
+						onProgress?.({
+							stage: "Complete",
+							progress: 100,
+							message: "PDF to image conversion completed!",
+						});
+
+						resolve({
+							success: true,
+							file: convertedFile,
+							originalName: originalFile.name,
+							targetFormat,
+							fileSize: convertedFile.size,
+						});
+					} else {
+						console.error("Canvas toBlob returned null for PDF page.");
+						resolve({
+							success: false,
+							error: "Failed to convert PDF page to image blob",
+							originalName: originalFile.name,
+							targetFormat,
+						});
+					}
+				},
+				`image/${targetFormat}`,
+				// Quality for toBlob is for JPG/WEBP.
+				// For PDF page rendering, 'scale' (passed as options.quality) is more relevant.
+				// We can keep options.quality here if it's intended for the final image compression.
+				typeof options.quality === 'number' && options.quality > 0 && options.quality <=1 ? options.quality : 0.92
+			);
+		});
+	} catch (error) {
+		console.error("PDF to Image conversion error:", error);
+		onProgress?.({ stage: "Error", progress: 100, message: "PDF to Image failed." });
+		return {
+			success: false,
+			error: `PDF to Image failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+			originalName: originalFile.name,
+			targetFormat,
+		};
+	}
 }
 
 async function convertFromWord(
@@ -730,9 +787,9 @@ function createAdvancedStyledHtml(content: string): string {
         }
         
         body {
-          font-family: 'Calibri', 'Times New Roman', 'Arial', sans-serif; /* Added Times New Roman and ensured Arial is a fallback */
-          font-size: 12pt; /* Common default size */
-          line-height: 1.5; /* Improved line spacing */
+          font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'Times New Roman', sans-serif; /* Common fonts */
+          font-size: 12pt; /* Default size */
+          line-height: 1.4; /* Adjusted for better readability */
           color: #000000;
           background: white;
           padding: 0; /* Margins will be handled by jsPDF options */
@@ -786,112 +843,119 @@ function createAdvancedStyledHtml(content: string): string {
         }
         
         ul, ol {
-          margin: 0 0 10pt 25pt; /* Adjusted indentation */
-          padding-left: 15pt; /* Ensure space for bullets/numbers */
+          margin: 0 0 10pt 20pt; /* Standard indentation */
+          padding-left: 20pt; /* Space for bullets/numbers */
         }
         
         li {
-          margin: 0 0 5pt 0; /* Consistent list item spacing */
-          line-height: 1.5;
+          margin: 0 0 4pt 0; /* Spacing between list items */
+          line-height: 1.4;
         }
 
-        ul li { list-style-type: disc; } /* Default bullet */
-        ol li { list-style-type: decimal; } /* Default numbering */
+        ul li { list-style-type: disc; }
+        ol li { list-style-type: decimal; }
 
-        /* More specific list styling if Mammoth preserves it */
-        ul[style*="list-style-type: square"] li { list-style-type: square; }
-        ul[style*="list-style-type: circle"] li { list-style-type: circle; }
-        ol[style*="list-style-type: lower-roman"] li { list-style-type: lower-roman; }
-        ol[style*="list-style-type: upper-roman"] li { list-style-type: upper-roman; }
-        ol[style*="list-style-type: lower-alpha"] li { list-style-type: lower-alpha; }
-        ol[style*="list-style-type: upper-alpha"] li { list-style-type: upper-alpha; }
+        /* Nested lists - basic styling */
+        ul ul, ol ol, ul ol, ol ul {
+          margin-top: 4pt;
+          margin-bottom: 4pt;
+        }
+        ul ul li { list-style-type: circle; }
+        ul ul ul li { list-style-type: square; }
+        ol ol li { list-style-type: lower-alpha; }
+        ol ol ol li { list-style-type: lower-roman; }
 
         table, table.word-table {
-          width: auto; /* Let tables size naturally, or 100% if specified by Word */
+          width: 100%; /* Default to full width, can be overridden by specific table styles from Word */
           border-collapse: collapse;
-          margin: 12pt 0;
-          font-size: 10pt; /* Slightly smaller for tables */
-          page-break-inside: avoid; /* Try to keep tables on one page */
+          margin: 1em 0; /* Use em for relative spacing */
+          font-size: 10pt;
+          page-break-inside: avoid;
         }
         
         table th, table td {
-          border: 1px solid #333333; /* Darker border for better visibility */
-          padding: 5pt 7pt; /* Adjusted cell padding */
-          text-align: left; /* Default, can be overridden by Word styles */
-          vertical-align: top;
+          border: 1px solid #666666; /* Slightly softer border */
+          padding: 6pt 8pt;
+          text-align: left;
+          vertical-align: top; /* Default, Word might override */
           line-height: 1.3;
         }
         
         table th {
-          background-color: #e0e0e0; /* Lighter gray for header */
+          background-color: #f0f0f0; /* Lighter header */
           font-weight: bold;
-          text-align: center; /* Common for headers */
+          text-align: center; /* Common for table headers */
         }
         
-        strong, b {
-          font-weight: bold;
-        }
+        /* Alignment classes that Mammoth might generate or we can map to */
+        .text-left { text-align: left !important; }
+        .text-center { text-align: center !important; }
+        .text-right { text-align: right !important; }
+        .text-justify { text-align: justify !important; }
+
+        .font-bold { font-weight: bold !important; }
+        .font-italic { font-style: italic !important; }
+        .font-underline { text-decoration: underline !important; }
+        .font-strikethrough { text-decoration: line-through !important; }
+        /* TODO: Consider how to handle font colors and sizes if mammoth provides them as classes/styles */
         
-        em, i {
-          font-style: italic;
-        }
-        
+        strong, b { font-weight: bold; }
+        em, i { font-style: italic; }
+        u { text-decoration: underline; }
+        s, strike { text-decoration: line-through; } /* Handle strike element */
+
         blockquote {
-          margin: 12px 0;
-          padding-left: 20px;
-          border-left: 3px solid #cccccc;
+          margin: 1em 0 1em 40px; /* Standard blockquote margins */
+          padding-left: 15px;
+          border-left: 3px solid #dddddd; /* Softer border */
           font-style: italic;
+          color: #555555; /* Slightly muted text for quotes */
         }
         
         blockquote p {
-          margin: 6px 0;
+          margin-bottom: 0.5em; /* Spacing within blockquote */
         }
         
         pre, code {
-          font-family: 'Courier New', monospace;
-          font-size: 10px;
-          background-color: #f8f8f8;
-          padding: 4px;
-          border: 1px solid #ddd;
+          font-family: 'Consolas', 'Courier New', monospace; /* Monospace fonts */
+          font-size: 9pt; /* Slightly smaller for code */
+          background-color: #f5f5f5; /* Light background for code blocks */
+          padding: 2px 4px;
+          border: 1px solid #e3e3e3;
+          border-radius: 3px;
         }
         
         pre {
-          margin: 12px 0;
-          padding: 8px;
-          white-space: pre-wrap;
+          padding: 0.5em;
+          margin: 1em 0;
+          overflow-x: auto; /* Allow horizontal scrolling for long lines */
+          white-space: pre-wrap; /* Wrap text but preserve spaces/newlines */
+          page-break-inside: avoid;
         }
         
         img {
-          max-width: 100%;
-          height: auto;
-          margin: 8px 0;
+          max-width: 100%; /* Ensure images are responsive */
+          height: auto; /* Maintain aspect ratio */
+          margin: 0.5em 0; /* Spacing around images */
+          display: block; /* Helps with margin handling */
         }
+        /* Example: if Mammoth wraps images in paragraphs with a specific class */
+        p.has-image img { margin: 0; } /* Reset margin if parent p handles it */
 
-        .page-break-before {
-          page-break-before: always;
-        }
+
+        .page-break-before { page-break-before: always; }
+        .page-break-after { page-break-after: always; }
         
-        /* Special styling for checkmarks and targets */
-        .checkmark::before {
-          content: "✓ ";
-          color: #22c55e;
-          font-weight: bold;
-        }
+        /* Special styling for checkmarks and targets (if needed) */
+        .checkmark::before { content: "✓ "; color: #22c55e; font-weight: bold; }
+        .target::before { content: "🎯 "; }
         
-        .target::before {
-          content: "🎯 ";
-        }
-        
-        /* Handle lists better - adjusted margins */
-        p + ul, p + ol {
-          margin-top: 0; /* Let paragraph margin handle spacing */
-        }
-        
-        /* Better spacing for headers after content - adjusted margins */
-        p + h1, ul + h1, ol + h1, table + h1 { margin-top: 24pt; }
-        p + h2, ul + h2, ol + h2, table + h2 { margin-top: 18pt; }
-        p + h3, ul + h3, ol + h3, table + h3 { margin-top: 16pt; }
-        p + h4, ul + h4, ol + h4, table + h4 { margin-top: 12pt; }
+        /* Spacing adjustments - refine as needed */
+        p + ul, p + ol { margin-top: 0.5em; }
+        p + h1, ul + h1, ol + h1, table + h1 { margin-top: 1.5em; }
+        p + h2, ul + h2, ol + h2, table + h2 { margin-top: 1.25em; }
+        p + h3, ul + h3, ol + h3, table + h3 { margin-top: 1em; }
+        p + h4, ul + h4, ol + h4, table + h4 { margin-top: 1em; }
 
       </style>
     </head>
@@ -957,36 +1021,87 @@ async function textToDocx(
 ): Promise<ConversionResult> {
 	onProgress?.({
 		stage: "Converting",
-		progress: 50,
-		message: "Creating DOCX from text...",
+		progress: 40, // Starting progress for actual work
+		message: "Loading DOCX library...",
 	});
 
-	// This is a simplified implementation
-	// For real DOCX creation, you'd use libraries like docx or officegen
-	const blob = new Blob([textContent], {
-		type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-	});
-	const convertedFile = new File(
-		[blob],
-		originalFile.name.replace(/\.[^/.]+$/, ".docx"),
-		{
-			type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-		}
-	);
+	const DocxModule = await import('docx');
+	if (!DocxModule) {
+		throw new Error("Failed to load DOCX library.");
+	}
 
 	onProgress?.({
-		stage: "Complete",
-		progress: 100,
-		message: "DOCX creation completed!",
+		stage: "Converting",
+		progress: 60,
+		message: "Creating DOCX structure from text...",
 	});
 
-	return {
-		success: true,
-		file: convertedFile,
-		originalName: originalFile.name,
-		targetFormat: "docx",
-		fileSize: convertedFile.size,
-	};
+	try {
+		const paragraphs = textContent.split("\n").map(
+			(line) =>
+				new DocxModule.Paragraph({
+					children: [new DocxModule.TextRun(line)],
+					spacing: { after: 100 }, // Add some spacing after paragraphs, value in twentieths of a point
+				})
+		);
+
+		const document = new DocxModule.Document({
+			sections: [
+				{
+					properties: {
+						page: { // Basic A4 setup, can be expanded
+							size: { width: DocxModule.convertMillimetersToTwip(210), height: DocxModule.convertMillimetersToTwip(297) },
+							margin: {
+								top: DocxModule.convertInchesToTwip(1),
+								right: DocxModule.convertInchesToTwip(1),
+								bottom: DocxModule.convertInchesToTwip(1),
+								left: DocxModule.convertInchesToTwip(1)
+							},
+						},
+					},
+					children: paragraphs.length > 0 ? paragraphs : [new DocxModule.Paragraph("")], // Ensure at least one empty paragraph if text is empty
+				},
+			],
+		});
+
+		onProgress?.({
+			stage: "Finalizing",
+			progress: 80,
+			message: "Generating DOCX file...",
+		});
+
+		const blob = await DocxModule.Packer.toBlob(document);
+		const convertedFile = new File(
+			[blob],
+			originalFile.name.replace(/\.[^/.]+$/, ".docx"),
+			{
+				type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+			}
+		);
+
+		onProgress?.({
+			stage: "Complete",
+			progress: 100,
+			message: "Text to DOCX conversion completed!",
+		});
+
+		return {
+			success: true,
+			file: convertedFile,
+			originalName: originalFile.name,
+			targetFormat: "docx",
+			fileSize: convertedFile.size,
+		};
+	} catch (error) {
+		console.error("Text to DOCX conversion error:", error);
+		onProgress?.({ stage: "Error", progress: 100, message: "Text to DOCX failed."});
+		return {
+			success: false,
+			error: `Text to DOCX failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+			originalName: originalFile.name,
+			targetFormat: "docx",
+		};
+	}
 }
 
 function createStyledHtmlContent(bodyContent: string): string {
