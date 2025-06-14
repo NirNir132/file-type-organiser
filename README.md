@@ -189,7 +189,7 @@ issues for bugs and feature requests.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
+This project is licensed under the MIT License - see the LICENSE file
 for details.
 
 ## 🙏 Acknowledgments
