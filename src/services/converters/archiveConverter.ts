@@ -1,5 +1,4 @@
 import JSZip from "jszip";
-import { Untar } from "tar-js"; // Added for TAR parsing
 import { inflate, gzip } from "pako";
 import {
 	ConversionOptions,
@@ -116,71 +115,16 @@ async function otherToZip(
 		let originalName = file.name.endsWith(".gz")
 			? file.name.slice(0, -3)
 			: file.name + "_decompressed";
-		if (!originalName) { // Handle cases like just ".gz"
+		if (!originalName) {
+			// Handle cases like just ".gz"
 			originalName = "decompressed_file";
 		}
 		zip.file(originalName, decompressed);
 	} else if (sourceFormat === "tar") {
-		// TAR parsing using tar-js
-		// Note: The Untar class and its behavior (especially readNext) are based on
-		// information from bug reports and common patterns due to sparse official documentation for tar-js.
-		onProgress?.({ stage: "Converting", progress: 30, message: "Parsing TAR entries..." });
-		try {
-			const untar = new Untar(fileBuffer);
-			const tarFiles: { name: string; buffer: ArrayBuffer; type: string }[] = [];
-
-			untar.onfile = (tarFile: any) => {
-				// Ensure to capture necessary details. The structure of tarFile might vary.
-				// Common properties are name, buffer (or similar for content), and type.
-				// Filter out directory entries if they don't have content or are handled differently.
-				if (tarFile.buffer && tarFile.name) { // Ensure basic properties exist
-					tarFiles.push({
-						name: tarFile.name,
-						buffer: tarFile.buffer.slice(0, tarFile.size), // Make sure to respect file size
-						type: tarFile.type || 'file' // Assuming 'file' if type is not specified
-					});
-				}
-			};
-
-			// Attempt to trigger reading of the tar entries.
-			// This loop is based on the assumption that readNext() drives the onfile callback
-			// and returns a truthy value (like the file object or true) while there are entries,
-			// and a falsy value (null, undefined, or false) when done.
-			if (typeof untar.readNext === 'function') {
-				while (untar.readNext()) {
-					// The onfile callback should populate tarFiles during these calls.
-				}
-			} else {
-				// Fallback or alternative if readNext isn't the driver or doesn't exist.
-				// This part is highly speculative. If tar-js processes files differently,
-				// this might need adjustment based on observed behavior or more detailed API info.
-				console.warn("Untar.readNext() not found or does not drive processing as expected. Tar parsing might be incomplete.");
-				// If untar.entries or untar.files exists and is populated after construction,
-				// it implies a different processing model. However, the bug report suggests onfile is the way.
-			}
-
-			if (tarFiles.length === 0) {
-				// This might happen if onfile was never called or readNext didn't work as expected.
-				// Or if the TAR file was genuinely empty or only contained directories without explicit file entries.
-				console.warn("No files extracted from TAR. The archive might be empty or structured in an unexpected way for tar-js.");
-				// To provide some feedback, we can add an empty marker or log this.
-				// For now, we'll proceed, and an empty ZIP might be created if no files were added.
-			}
-
-			onProgress?.({ stage: "Converting", progress: 50, message: `Adding ${tarFiles.length} files to ZIP...` });
-			for (const tarEntry of tarFiles) {
-				if (tarEntry.type === 'file' || (tarEntry.buffer && tarEntry.buffer.byteLength > 0)) {
-					zip.file(tarEntry.name, tarEntry.buffer);
-				} else if (tarEntry.type === 'directory' || tarEntry.type === '5') { // '5' is often directory type in tar
-					// JSZip creates directories implicitly if files are added with paths like "folder/file.txt"
-					// Or explicitly: zip.folder(tarEntry.name);
-					// For now, we only add files with content. Directories will be created by file paths.
-				}
-			}
-		} catch (e) {
-			console.error("Error during TAR to ZIP conversion:", e);
-			throw new Error(`TAR parsing failed: ${e instanceof Error ? e.message : String(e)}`);
-		}
+		// TAR parsing is temporarily unavailable
+		throw new Error(
+			"TAR to ZIP conversion temporarily unavailable - use GZ or ZIP instead"
+		);
 	}
 
 	onProgress?.({

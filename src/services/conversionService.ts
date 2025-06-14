@@ -1,10 +1,4 @@
-import {
-	ConversionCategory,
-	ConversionFormat,
-	ConversionOptions,
-	ConversionProgress,
-	ConversionResult,
-} from "../types";
+import { ConversionCategory, ConversionProgress } from "../types";
 
 // Supported conversion formats organized by category
 export const CONVERSION_CATEGORIES: ConversionCategory[] = [

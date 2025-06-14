@@ -18,7 +18,6 @@ import {
 	Download,
 	Layout,
 	List,
-	FileText,
 	FolderOpen,
 	RefreshCw,
 } from "lucide-react";

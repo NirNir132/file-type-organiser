@@ -6,12 +6,12 @@ import {
 
 // pdfjs-dist and docx will be imported dynamically.
 
-
 // Lazy load libraries
 let pdfLibLoaded: any = null; // Renamed to avoid conflict with pdfjsLib
 let mammoth: any = null;
 let html2canvas: any = null;
 let jsPDF: any = null;
+let pdfjsLib: any = null;
 
 async function loadPdfLib() {
 	if (!pdfLibLoaded) {
@@ -41,6 +41,20 @@ async function loadJsPDF() {
 		jsPDF = module.default;
 	}
 	return jsPDF;
+}
+
+async function loadPdfJs() {
+	if (!pdfjsLib) {
+		pdfjsLib = await import("pdfjs-dist");
+		// Set up worker path for PDF.js
+		if (
+			typeof window !== "undefined" &&
+			!pdfjsLib.GlobalWorkerOptions.workerSrc
+		) {
+			pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+		}
+	}
+	return pdfjsLib;
 }
 
 export async function convertDocument(
@@ -107,12 +121,26 @@ async function convertFromPdf(
 			// If pdfToImage uses pdf-lib, it needs to load the doc itself or receive a pdf-lib doc.
 			// For this refactor, let's assume pdfToImage will handle its PDF loading if needed,
 			// or we adapt it to take `file: File`. For now, we load it here.
-			onProgress?.({ stage: "Loading", progress: 25, message: "Loading PDF for image conversion..." });
+			onProgress?.({
+				stage: "Loading",
+				progress: 25,
+				message: "Loading PDF for image conversion...",
+			});
 			const pdfLibMod = await loadPdfLib(); // Ensure pdfLibLoaded is used
 			const arrBuff = await file.arrayBuffer();
 			const pdfDocForImage = await pdfLibMod.PDFDocument.load(arrBuff);
-			onProgress?.({ stage: "Converting", progress: 50, message: "Processing PDF for image..." });
-			return await pdfToImage(pdfDocForImage, file, targetFormat, options, onProgress);
+			onProgress?.({
+				stage: "Converting",
+				progress: 50,
+				message: "Processing PDF for image...",
+			});
+			return await pdfToImage(
+				pdfDocForImage,
+				file,
+				targetFormat,
+				options,
+				onProgress
+			);
 		default:
 			console.error(`PDF to ${targetFormat} conversion not supported`);
 			return {
@@ -124,15 +152,11 @@ async function convertFromPdf(
 	}
 }
 
-
 async function extractTextContentFromPdf(
 	file: File,
 	onProgress?: (progress: ConversionProgress) => void
 ): Promise<string> {
-	const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.js');
-	if (typeof window !== 'undefined' && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
-		pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
-	}
+	const pdfjsLib = await loadPdfJs();
 
 	const arrayBuffer = await file.arrayBuffer();
 
@@ -157,9 +181,11 @@ async function extractTextContentFromPdf(
 		const textContent = await page.getTextContent();
 
 		// Basic text item concatenation. Might need refinement for spacing, hyphenation, etc.
-		textContent.items.forEach((item: any) => { // TODO: Add proper type for item if available from pdfjsLib
+		textContent.items.forEach((item: any) => {
+			// TODO: Add proper type for item if available from pdfjsLib
 			fullText += item.str;
-			if (item.hasEOL) { // End of Line marker from pdf.js
+			if (item.hasEOL) {
+				// End of Line marker from pdf.js
 				fullText += "\n";
 			} else if (item.str.trim().length > 0 && !item.str.endsWith(" ")) {
 				// Add a space if the item is not empty and doesn't end with one,
@@ -190,7 +216,7 @@ async function extractTextContentFromPdf(
 
 async function pdfToText(
 	originalFile: File,
-	options: ConversionOptions,
+	_options: ConversionOptions,
 	onProgress?: (progress: ConversionProgress) => void
 ): Promise<ConversionResult> {
 	onProgress?.({
@@ -200,7 +226,10 @@ async function pdfToText(
 	});
 
 	try {
-		const textContent = await extractTextContentFromPdf(originalFile, onProgress);
+		const textContent = await extractTextContentFromPdf(
+			originalFile,
+			onProgress
+		);
 
 		const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
 		const convertedFile = new File(
@@ -224,10 +253,16 @@ async function pdfToText(
 		};
 	} catch (error) {
 		console.error("PDF to Text conversion error:", error);
-		onProgress?.({ stage: "Error", progress: 100, message: "PDF to Text failed." });
+		onProgress?.({
+			stage: "Error",
+			progress: 100,
+			message: "PDF to Text failed.",
+		});
 		return {
 			success: false,
-			error: `PDF to Text failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+			error: `PDF to Text failed: ${
+				error instanceof Error ? error.message : "Unknown error"
+			}`,
 			originalName: originalFile.name,
 			targetFormat: "txt",
 		};
@@ -236,13 +271,12 @@ async function pdfToText(
 
 // pdfToImage still expects pdfDoc from pdf-lib. Ensure this is handled if image conversion is triggered.
 async function pdfToImage(
-	pdfDoc: any,
+	_pdfDoc: any,
 	originalFile: File,
 	targetFormat: string,
 	options: ConversionOptions,
 	onProgress?: (progress: ConversionProgress) => void
 ): Promise<ConversionResult> {
-
 	// This function currently uses pdf-lib's pdfDoc.
 	// If called from the refactored convertFromPdf, ensure pdfDoc is loaded correctly with pdf-lib.
 	// For actual PDF page rendering to canvas, pdf.js would be used.
@@ -265,7 +299,10 @@ async function pdfToImage(
 
 	// --- Placeholder rendering ---
 	// For now, we'll stick to the placeholder, but apply scale conceptually.
-	const scale = typeof options.scale === 'number' && options.scale > 0 && options.scale <= 5 ? options.scale : 1.5;
+	const scale =
+		typeof options.scale === "number" && options.scale > 0 && options.scale <= 5
+			? options.scale
+			: 1.5;
 	// Adjust canvas size based on scale, assuming base dimensions before scaling
 	const baseWidth = options.width || 800 / 1.5; // default base width if scale is 1.5
 	const baseHeight = options.height || 600 / 1.5; // default base height if scale is 1.5
@@ -281,7 +318,11 @@ async function pdfToImage(
 	ctx.fillStyle = "black";
 	ctx.font = `${20 * scale}px Arial`; // Scale font size too
 	ctx.fillText("PDF converted to image", 50 * scale, 50 * scale);
-	ctx.fillText("(Requires pdf.js for full implementation)", 50 * scale, 80 * scale);
+	ctx.fillText(
+		"(Requires pdf.js for full implementation)",
+		50 * scale,
+		80 * scale
+	);
 
 	return new Promise((resolve) => {
 		canvas.toBlob(
@@ -318,7 +359,11 @@ async function pdfToImage(
 			`image/${targetFormat}`,
 			// Ensure options.quality is used for image compression (0.0 to 1.0)
 			// Default to 0.92 for JPEGs if not specified or out of range.
-			typeof options.quality === 'number' && options.quality > 0 && options.quality <= 1 ? options.quality : 0.92
+			typeof options.quality === "number" &&
+				options.quality > 0 &&
+				options.quality <= 1
+				? options.quality
+				: 0.92
 		);
 	});
 }
@@ -437,15 +482,18 @@ async function wordToPdfAdvanced(
 			],
 			includeDefaultStyleMap: true, // Keep this true to include Mammoth's defaults
 			convertImage: mammothModule.images.imgElement(function (image: any) {
-				return image.read("base64").then(function (imageBuffer: any) {
-					return {
-						src: "data:" + image.contentType + ";base64," + imageBuffer,
-					};
-				}).catch(function(error: any) {
-					console.warn("Mammoth: Failed to convert an image.", error);
-					// Return a placeholder or skip the image
-					return { src: "" }; // Could be an empty string or a placeholder image data URI
-				});
+				return image
+					.read("base64")
+					.then(function (imageBuffer: any) {
+						return {
+							src: "data:" + image.contentType + ";base64," + imageBuffer,
+						};
+					})
+					.catch(function (error: any) {
+						console.warn("Mammoth: Failed to convert an image.", error);
+						// Return a placeholder or skip the image
+						return { src: "" }; // Could be an empty string or a placeholder image data URI
+					});
 			}),
 		});
 
@@ -472,20 +520,31 @@ async function wordToPdfAdvanced(
 			options,
 			onProgress
 		);
-	} catch (conversionError) { // Catching errors from htmlToPdfWithJsPDF or mammoth
-		if (conversionError instanceof Error && conversionError.message.includes("jsPDF")) {
-			console.error("Advanced Word to PDF conversion failed specifically during jsPDF processing:", conversionError);
+	} catch (conversionError) {
+		// Catching errors from htmlToPdfWithJsPDF or mammoth
+		if (
+			conversionError instanceof Error &&
+			conversionError.message.includes("jsPDF")
+		) {
+			console.error(
+				"Advanced Word to PDF conversion failed specifically during jsPDF processing:",
+				conversionError
+			);
 			onProgress?.({
 				stage: "Converting",
 				progress: 30,
 				message: "Falling back to basic conversion due to jsPDF error...",
 			});
 		} else {
-			console.error("Advanced Word to PDF conversion failed (Mammoth or other HTML processing error):", conversionError);
+			console.error(
+				"Advanced Word to PDF conversion failed (Mammoth or other HTML processing error):",
+				conversionError
+			);
 			onProgress?.({
 				stage: "Converting",
 				progress: 30,
-				message: "Falling back to basic conversion due to HTML processing error...",
+				message:
+					"Falling back to basic conversion due to HTML processing error...",
 			});
 		}
 		return await wordToPdfBasic(
@@ -510,18 +569,26 @@ async function wordToPdfBasic(
 		progress: 50,
 		message: "Basic Word to PDF conversion...",
 	});
-	console.log("Attempting basic Word to PDF conversion for:", originalFile.name);
+	console.log(
+		"Attempting basic Word to PDF conversion for:",
+		originalFile.name
+	);
 	try {
 		const result = await mammothModule.convertToHtml({ arrayBuffer });
 		const htmlContent = result.value;
 		console.log("Basic conversion HTML content generated for fallback.");
 		return await htmlToPdf(htmlContent, originalFile, options, onProgress); // Assuming htmlToPdf is the basic canvas-based one
 	} catch (error) {
-		console.error("Basic Word to PDF conversion (mammoth part during fallback) failed:", error);
+		console.error(
+			"Basic Word to PDF conversion (mammoth part during fallback) failed:",
+			error
+		);
 		// If even basic mammoth conversion fails, we need to return a failure result
 		return {
 			success: false,
-			error: `Fallback basic conversion also failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+			error: `Fallback basic conversion also failed: ${
+				error instanceof Error ? error.message : "Unknown error"
+			}`,
 			originalName: originalFile.name,
 			targetFormat: "pdf",
 		};
@@ -530,10 +597,10 @@ async function wordToPdfBasic(
 
 async function pdfToDocxInternal(
 	file: File,
-	options: ConversionOptions,
+	_options: ConversionOptions,
 	onProgress?: (progress: ConversionProgress) => void
 ): Promise<ConversionResult> {
-	const DocxModule = await import('docx');
+	const DocxModule = await import("docx");
 	onProgress?.({
 		stage: "Converting",
 		progress: 0,
@@ -551,12 +618,14 @@ async function pdfToDocxInternal(
 
 		const paragraphs = textContent.split("\n").map(
 			(line) =>
-				new DocxModule.Paragraph({ // Changed to DocxModule.Paragraph
+				new DocxModule.Paragraph({
+					// Changed to DocxModule.Paragraph
 					children: [new DocxModule.TextRun(line)], // Changed to DocxModule.TextRun
 				})
 		);
 
-		const document = new DocxModule.Document({ // Changed to DocxModule.Document
+		const document = new DocxModule.Document({
+			// Changed to DocxModule.Document
 			sections: [
 				{
 					properties: {}, // Default properties
@@ -589,21 +658,26 @@ async function pdfToDocxInternal(
 		};
 	} catch (error) {
 		console.error("PDF to DOCX conversion error:", error);
-		onProgress?.({ stage: "Error", progress: 100, message: "PDF to DOCX failed." });
+		onProgress?.({
+			stage: "Error",
+			progress: 100,
+			message: "PDF to DOCX failed.",
+		});
 		return {
 			success: false,
-			error: `PDF to DOCX failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+			error: `PDF to DOCX failed: ${
+				error instanceof Error ? error.message : "Unknown error"
+			}`,
 			originalName: file.name,
 			targetFormat: "docx",
 		};
 	}
 }
 
-
 async function htmlToPdfWithJsPDF(
 	htmlContent: string,
 	originalFile: File,
-	options: ConversionOptions,
+	_options: ConversionOptions,
 	onProgress?: (progress: ConversionProgress) => void
 ): Promise<ConversionResult> {
 	const jsPDFModule = await loadJsPDF();
@@ -668,7 +742,7 @@ async function htmlToPdfWithJsPDF(
 		});
 
 		await pdf.html(tempDiv, {
-			callback: function (doc: any) {
+			callback: function (_doc: any) {
 				// PDF generation complete
 				// doc.putTotalPages('___total_pages___'); // Example for total pages if needed
 			},
@@ -676,7 +750,8 @@ async function htmlToPdfWithJsPDF(
 			y: 36, // Top margin (0.5 inch)
 			width: 523, // Content width (A4 width 595pt - 2*36pt margins)
 			windowWidth: 595, // A4 width in points, important for html2canvas scaling
-			margin: { // More explicit margin object
+			margin: {
+				// More explicit margin object
 				top: 36,
 				right: 36,
 				bottom: 36,
@@ -1140,7 +1215,7 @@ function createStyledHtmlContent(bodyContent: string): string {
 async function htmlToPdf(
 	htmlContent: string,
 	originalFile: File,
-	options: ConversionOptions,
+	_options: ConversionOptions,
 	onProgress?: (progress: ConversionProgress) => void
 ): Promise<ConversionResult> {
 	const html2canvasModule = await loadHtml2Canvas();

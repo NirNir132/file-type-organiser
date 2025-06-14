@@ -41,8 +41,12 @@ declare module "mammoth" {
 		messages: any[];
 	}
 
-	export function convertToHtml(options: { arrayBuffer: ArrayBuffer } & ConvertToHtmlOptions): Promise<ConvertResult>;
-	export function extractRawText(options: { arrayBuffer: ArrayBuffer }): Promise<ConvertResult>;
+	export function convertToHtml(
+		options: { arrayBuffer: ArrayBuffer } & ConvertToHtmlOptions
+	): Promise<ConvertResult>;
+	export function extractRawText(options: {
+		arrayBuffer: ArrayBuffer;
+	}): Promise<ConvertResult>;
 }
 
 declare module "@ffmpeg/ffmpeg" {
@@ -81,7 +85,10 @@ declare module "html2canvas" {
 		scrollY?: number;
 	}
 
-	function html2canvas(element: HTMLElement, options?: Options): Promise<HTMLCanvasElement>;
+	function html2canvas(
+		element: HTMLElement,
+		options?: Options
+	): Promise<HTMLCanvasElement>;
 	export default html2canvas;
 }
 
@@ -94,46 +101,62 @@ declare module "pdf-lib" {
 		embedJpg(data: ArrayBuffer): Promise<PDFImage>;
 		save(): Promise<Uint8Array>;
 	}
-	
+
 	export class PDFPage {
-		drawImage(image: PDFImage, options: {
-			x: number;
-			y: number;
-			width: number;
-			height: number;
-		}): void;
+		drawImage(
+			image: PDFImage,
+			options: {
+				x: number;
+				y: number;
+				width: number;
+				height: number;
+			}
+		): void;
 	}
-	
+
 	export class PDFImage {}
 }
 
 declare module "jspdf" {
 	interface jsPDFOptions {
-		orientation?: 'portrait' | 'landscape';
-		unit?: 'pt' | 'mm' | 'cm' | 'in';
+		orientation?: "portrait" | "landscape";
+		unit?: "pt" | "mm" | "cm" | "in";
 		format?: string | [number, number];
 		compress?: boolean;
 	}
-	
+
 	export default class jsPDF {
 		constructor(options?: jsPDFOptions);
 		text(text: string, x: number, y: number, options?: any): jsPDF;
 		setFontSize(size: number): jsPDF;
 		setFont(fontName: string, fontStyle?: string): jsPDF;
-		addPage(format?: string | [number, number], orientation?: 'portrait' | 'landscape'): jsPDF;
-		html(element: HTMLElement | string, options?: {
-			callback?: (pdf: jsPDF) => void;
-			x?: number;
-			y?: number;
-			width?: number;
-			windowWidth?: number;
-			margin?: number | [number, number, number, number];
-			autoPaging?: boolean | 'text' | 'slice';
-			html2canvas?: any;
-			jsPDF?: jsPDF;
-		}): Promise<jsPDF>;
+		addPage(
+			format?: string | [number, number],
+			orientation?: "portrait" | "landscape"
+		): jsPDF;
+		html(
+			element: HTMLElement | string,
+			options?: {
+				callback?: (pdf: jsPDF) => void;
+				x?: number;
+				y?: number;
+				width?: number;
+				windowWidth?: number;
+				margin?: number | [number, number, number, number];
+				autoPaging?: boolean | "text" | "slice";
+				html2canvas?: any;
+				jsPDF?: jsPDF;
+			}
+		): Promise<jsPDF>;
 		save(filename?: string): jsPDF;
-		output(type?: 'blob' | 'bloburi' | 'dataurlstring' | 'dataurlnewwindow' | 'datauri'): any;
+		output(
+			type?:
+				| "blob"
+				| "bloburi"
+				| "dataurlstring"
+				| "dataurlnewwindow"
+				| "datauri"
+		): any;
 		internal: {
 			pageSize: {
 				width: number;
@@ -149,13 +172,13 @@ declare module "jspdf-autotable" {
 		body?: any[][];
 		startY?: number;
 		margin?: { top?: number; right?: number; bottom?: number; left?: number };
-		pageBreak?: 'auto' | 'avoid' | 'always';
-		theme?: 'striped' | 'grid' | 'plain';
+		pageBreak?: "auto" | "avoid" | "always";
+		theme?: "striped" | "grid" | "plain";
 		styles?: any;
 		headStyles?: any;
 		bodyStyles?: any;
 	}
-	
+
 	export default function autoTable(doc: any, options: AutoTableOptions): void;
 }
 
@@ -164,17 +187,21 @@ declare module "xlsx" {
 		SheetNames: string[];
 		Sheets: { [key: string]: WorkSheet };
 	}
-	
+
 	interface WorkSheet {
 		[key: string]: any;
 	}
-	
+
 	export function read(data: ArrayBuffer, options?: any): WorkBook;
 	export function write(workbook: WorkBook, options?: any): ArrayBuffer;
-	export function utils: {
+	export const utils: {
 		sheet_to_csv(worksheet: WorkSheet): string;
 		json_to_sheet(data: any[]): WorkSheet;
 		book_new(): WorkBook;
-		book_append_sheet(workbook: WorkBook, worksheet: WorkSheet, name: string): void;
+		book_append_sheet(
+			workbook: WorkBook,
+			worksheet: WorkSheet,
+			name: string
+		): void;
 	};
 }
