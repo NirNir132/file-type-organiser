@@ -129,7 +129,7 @@ async function extractTextContentFromPdf(
 	file: File,
 	onProgress?: (progress: ConversionProgress) => void
 ): Promise<string> {
-	const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.js');
+	const pdfjsLib = await import('pdfjs-dist');
 	if (typeof window !== 'undefined' && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
 		pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 	}
