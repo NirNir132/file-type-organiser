@@ -76,6 +76,7 @@ export interface ConversionResult {
 
 export interface ConversionOptions {
 	quality?: number;
+	scale?: number; // Added for PDF to image scaling
 	width?: number;
 	height?: number;
 	bitrate?: number;

@@ -246,26 +246,43 @@ async function pdfToImage(
 
 	// This function currently uses pdf-lib's pdfDoc.
 	// If called from the refactored convertFromPdf, ensure pdfDoc is loaded correctly with pdf-lib.
+	// For actual PDF page rendering to canvas, pdf.js would be used.
+	// The 'scale' option would influence the viewport dimensions when rendering a PDF page.
+	// The 'quality' option is for the output image format (e.g., JPEG quality).
+
 	onProgress?.({
 		stage: "Converting",
-		progress: 75,
+		progress: 75, // Assuming previous steps took up to 75%
 		message: "Converting PDF to image...",
 	});
 
-	// This is a simplified implementation
-	// In a real app, you'd use pdf.js to render pages to canvas
+	// Example: Use pdf.js to render a page (conceptual)
+	// This part is illustrative and would need actual pdf.js integration.
+	// const pdfPage = await pdfDoc.getPage(1); // Assuming pdfDoc is a pdf.js document object
+	// const viewport = pdfPage.getViewport({ scale: options.scale || 1.5 });
+	// canvas.width = viewport.width;
+	// canvas.height = viewport.height;
+	// await pdfPage.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+	// --- Placeholder rendering ---
+	// For now, we'll stick to the placeholder, but apply scale conceptually.
+	const scale = typeof options.scale === 'number' && options.scale > 0 && options.scale <= 5 ? options.scale : 1.5;
+	// Adjust canvas size based on scale, assuming base dimensions before scaling
+	const baseWidth = options.width || 800 / 1.5; // default base width if scale is 1.5
+	const baseHeight = options.height || 600 / 1.5; // default base height if scale is 1.5
+
 	const canvas = document.createElement("canvas");
 	const ctx = canvas.getContext("2d")!;
 
-	canvas.width = options.width || 800;
-	canvas.height = options.height || 600;
+	canvas.width = baseWidth * scale;
+	canvas.height = baseHeight * scale;
 
 	ctx.fillStyle = "white";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	ctx.fillStyle = "black";
-	ctx.font = "20px Arial";
-	ctx.fillText("PDF converted to image", 50, 50);
-	ctx.fillText("(Requires pdf.js for full implementation)", 50, 80);
+	ctx.font = `${20 * scale}px Arial`; // Scale font size too
+	ctx.fillText("PDF converted to image", 50 * scale, 50 * scale);
+	ctx.fillText("(Requires pdf.js for full implementation)", 50 * scale, 80 * scale);
 
 	return new Promise((resolve) => {
 		canvas.toBlob(
@@ -300,7 +317,9 @@ async function pdfToImage(
 				}
 			},
 			`image/${targetFormat}`,
-			options.quality || 0.8
+			// Ensure options.quality is used for image compression (0.0 to 1.0)
+			// Default to 0.92 for JPEGs if not specified or out of range.
+			typeof options.quality === 'number' && options.quality > 0 && options.quality <= 1 ? options.quality : 0.92
 		);
 	});
 }
