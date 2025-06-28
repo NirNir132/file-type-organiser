@@ -51,7 +51,9 @@ async function zipToOther(
 		progress: 10,
 		message: "Reading ZIP archive...",
 	});
-	const zip = await JSZip.loadAsync(await file.arrayBuffer());
+
+	const buffer = await file.arrayBuffer();
+	const zip = await new JSZip().loadAsync(buffer);
 
 	onProgress?.({
 		stage: "Converting",
@@ -68,12 +70,18 @@ async function zipToOther(
 	} else {
 		// zip -> gz : we will concatenate all files and gzip (simple implementation)
 		let combined = "";
-		const files = Object.values(zip.files);
-		for (const entry of files) {
-			if (!entry.dir) {
-				combined += await entry.async("string");
-			}
-		}
+
+		// Type-safe handling of zip files
+		await Promise.all(
+			Object.keys(zip.files).map(async (filename) => {
+				const zipEntry = zip.files[filename];
+				if (!zipEntry.dir) {
+					const content = await zipEntry.async("string");
+					combined += content;
+				}
+			})
+		);
+
 		const gzData = gzip(combined);
 		const convertedFile = new File(
 			[gzData],
@@ -132,10 +140,12 @@ async function otherToZip(
 		progress: 60,
 		message: "Generating ZIP file...",
 	});
+
+	// Generate the zip file with type-safe options
 	const zipData = await zip.generateAsync({
 		type: "uint8array",
-		compression: "DEFLATE",
 	});
+
 	const convertedFile = new File(
 		[zipData],
 		file.name.replace(/\.[^/.]+$/, `.zip`),

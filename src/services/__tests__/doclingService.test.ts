@@ -1,4 +1,4 @@
-import { doclingService, DocumentAnalysisResult } from "../doclingService";
+import { doclingService } from "../doclingService";
 
 // Mock the File.arrayBuffer method
 const mockArrayBuffer = jest.fn().mockResolvedValue(new ArrayBuffer(0));

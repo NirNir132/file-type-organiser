@@ -47,11 +47,88 @@ declare module "*.css" {
 
 // JSZip for handling ZIP files
 declare module "jszip" {
-	export default class JSZip {
-		file(name: string, data: any, options?: any): this;
-		folder(name: string): this;
-		generateAsync(options: { type: string }): Promise<Blob>;
+	interface JSZipFileOptions {
+		base64?: boolean;
+		binary?: boolean;
+		date?: Date;
+		compression?: string;
+		comment?: string;
+		optimizedBinaryString?: boolean;
+		createFolders?: boolean;
+		unixPermissions?: number | string;
+		dosPermissions?: number;
 	}
+
+	interface JSZipGeneratorOptions {
+		compression?: string;
+		compressionOptions?: {
+			level: number;
+		};
+		type?: string;
+		comment?: string;
+		mimeType?: string;
+		platform?: string;
+		encodeFileName?: (filename: string) => string;
+	}
+
+	interface JSZipObject {
+		name: string;
+		dir: boolean;
+		date: Date;
+		comment: string;
+		unixPermissions: number | string | null;
+		dosPermissions: number | null;
+		options: {
+			compression: string;
+		};
+		async<T>(type: string): Promise<T>;
+	}
+
+	interface JSZipFile extends JSZipObject {
+		async(type: "string"): Promise<string>;
+		async(type: "uint8array"): Promise<Uint8Array>;
+		async(type: "arraybuffer"): Promise<ArrayBuffer>;
+		async(type: "blob"): Promise<Blob>;
+		async(type: "base64"): Promise<string>;
+		async(type: "binarystring"): Promise<string>;
+		async(type: "nodebuffer"): Promise<Buffer>;
+		async(type: "text"): Promise<string>;
+		nodeStream(): NodeJS.ReadableStream;
+	}
+
+	interface JSZip {
+		files: { [key: string]: JSZipFile };
+		comment: string;
+		root: string;
+		clone(): JSZip;
+		generate(options?: JSZipGeneratorOptions): any;
+		generateAsync(options?: JSZipGeneratorOptions): Promise<any>;
+		loadAsync(
+			data: string | ArrayBuffer | Blob | Uint8Array,
+			options?: JSZipFileOptions
+		): Promise<JSZip>;
+		file(
+			path: string,
+			data: string | ArrayBuffer | Uint8Array | Buffer,
+			options?: JSZipFileOptions
+		): JSZip;
+		file(path: string): JSZipObject;
+		folder(name: string): JSZip;
+		remove(path: string): JSZip;
+		filter(
+			predicate: (relativePath: string, file: JSZipObject) => boolean
+		): Array<JSZipObject>;
+	}
+
+	class JSZip {
+		constructor();
+		static loadAsync(
+			data: string | ArrayBuffer | Blob | Uint8Array,
+			options?: JSZipFileOptions
+		): Promise<JSZip>;
+	}
+
+	export default JSZip;
 }
 
 // PDF.js for PDF processing
