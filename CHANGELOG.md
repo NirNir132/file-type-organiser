@@ -3,6 +3,56 @@
 All notable changes to the Advanced File Type Organizer & Converter will be
 documented in this file.
 
+## [2.1.0] - 2025-06-01 - Document Intelligence Integration
+
+### 🚀 Major Features Added
+
+#### **Document Intelligence Powered by Docling**
+
+- **Advanced Document Processing**: Integration with IBM's open-source Docling
+  toolkit
+- **Table Extraction**: High-accuracy table extraction from PDFs and documents
+- **Layout Analysis**: Identification of headings, paragraphs, lists, and other
+  structural elements
+- **Text Extraction & OCR**: Enhanced text extraction from scanned documents and
+  images
+- **Document Summarization**: Generation of concise document summaries
+
+#### **Technical Implementation**
+
+- **Client-Side Processing**: All document processing happens locally in the
+  browser
+- **Privacy-First**: No document uploads to external servers
+- **Structured Data Output**: Export extracted data in various formats (JSON,
+  CSV, etc.)
+- **Visual Document Analysis**: Interactive visualization of document structure
+
+### 🎨 User Experience Improvements
+
+- **New Document Intelligence Tab**: Dedicated interface for document processing
+- **Drag & Drop Support**: Easy document uploading
+- **Interactive Results**: Visual representation of extracted data and document
+  structure
+- **Educational Content**: New blog post explaining document intelligence
+  capabilities
+
+### 🔧 Technical Improvements
+
+- **Modular Integration**: Clean separation of document intelligence features
+- **Progressive Enhancement**: Feature available but doesn't impact core
+  functionality
+- **Performance Optimization**: Efficient document processing with minimal
+  resource usage
+
+### 📊 Document Processing Capabilities
+
+| Feature                | Capability Level      | Notes                                   |
+| ---------------------- | --------------------- | --------------------------------------- |
+| Table Extraction       | ⭐⭐⭐⭐ High Quality | Powered by IBM's TableFormer model      |
+| Layout Analysis        | ⭐⭐⭐⭐⭐ Production | Advanced document structure recognition |
+| Text Extraction        | ⭐⭐⭐⭐⭐ Production | Superior to traditional OCR             |
+| Document Summarization | ⭐⭐⭐ Good           | Basic summarization capabilities        |
+
 ## [2.0.0] - 2024-01-XX - Enhanced Document Conversion
 
 ### 🚀 Major Features Added

@@ -5,6 +5,7 @@ import AdvancedFilter from "./components/AdvancedFilter";
 import FolderStats from "./components/FolderStats";
 import FileList from "./components/FileList";
 import FileConverter from "./components/FileConverter";
+import DocumentIntelligence from "./components/DocumentIntelligence";
 import {
 	createZipFromFiles,
 	buildFileTree,
@@ -20,9 +21,10 @@ import {
 	List,
 	FolderOpen,
 	RefreshCw,
+	FileText,
 } from "lucide-react";
 
-type AppMode = "organizer" | "converter";
+type AppMode = "organizer" | "converter" | "intelligence";
 
 const App: React.FC = () => {
 	const [currentMode, setCurrentMode] = useState<AppMode>("organizer");
@@ -177,12 +179,16 @@ const App: React.FC = () => {
 					<h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-indigo-600 to-purple-700 mb-3">
 						{currentMode === "organizer"
 							? "Advanced Folder Visualizer"
-							: "File Format Converter"}
+							: currentMode === "converter"
+							? "File Format Converter"
+							: "Document Intelligence"}
 					</h1>
 					<p className="text-lg text-slate-700/90 max-w-3xl mx-auto mb-6">
 						{currentMode === "organizer"
 							? "Drag & drop folders to visualize their structure, search files, apply advanced filters, and download organized collections. All processing happens locally in your browser."
-							: "Convert between different file formats quickly and securely. All conversions happen locally in your browser - no uploads to servers."}
+							: currentMode === "converter"
+							? "Convert between different file formats quickly and securely. All conversions happen locally in your browser - no uploads to servers."
+							: "Extract insights from complex documents with advanced AI-powered document processing. Analyze layouts, extract tables, and transform documents into structured data."}
 					</p>
 
 					{/* Navigation Tabs */}
@@ -211,6 +217,17 @@ const App: React.FC = () => {
 									<RefreshCw className="w-4 h-4" />
 									<span>File Converter</span>
 								</button>
+								<button
+									onClick={() => setCurrentMode("intelligence")}
+									className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all ${
+										currentMode === "intelligence"
+											? "bg-blue-600 text-white shadow-md"
+											: "text-slate-600 hover:text-slate-800 hover:bg-slate-100"
+									}`}
+								>
+									<FileText className="w-4 h-4" />
+									<span>Document Intelligence</span>
+								</button>
 							</div>
 						</div>
 					</div>
@@ -227,6 +244,32 @@ const App: React.FC = () => {
 							<span className="font-semibold block text-base">Error:</span>
 							<p className="text-sm">{error}</p>
 						</div>
+					</div>
+				)}
+
+				{/* Document Intelligence Mode */}
+				{currentMode === "intelligence" && (
+					<div className="max-w-4xl mx-auto">
+						{/* Beta Notification Banner */}
+						<div className="mb-6 p-4 text-sm text-blue-800 bg-blue-50/90 backdrop-blur-sm rounded-xl border border-blue-300/80 shadow-lg flex items-start space-x-3">
+							<AlertTriangle
+								className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5"
+								strokeWidth={2.5}
+							/>
+							<div>
+								<span className="font-semibold block text-base">
+									New Feature
+								</span>
+								<p className="text-sm">
+									Document Intelligence is powered by Docling, an open-source
+									document processing toolkit that helps extract structured data
+									from complex documents. All processing happens locally in your
+									browser.
+								</p>
+							</div>
+						</div>
+
+						<DocumentIntelligence />
 					</div>
 				)}
 
@@ -407,6 +450,24 @@ const App: React.FC = () => {
 									</div>
 
 									<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+										<a
+											href="/docling-document-intelligence.html"
+											className="group bg-blue-50 hover:bg-blue-100 p-6 rounded-xl border border-blue-200 hover:border-blue-300 transition-all duration-300 hover:shadow-lg"
+										>
+											<div className="flex items-center mb-3">
+												<div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+													<span className="text-xl">🧠</span>
+												</div>
+												<h3 className="ml-3 font-semibold text-slate-800 group-hover:text-blue-900">
+													NEW: Document Intelligence
+												</h3>
+											</div>
+											<p className="text-sm text-slate-600 group-hover:text-blue-700">
+												Transform complex documents into structured data with
+												AI-powered document processing
+											</p>
+										</a>
+
 										<a
 											href="/file-types-documents.html"
 											className="group bg-slate-50 hover:bg-blue-50 p-6 rounded-xl border border-slate-200 hover:border-blue-300 transition-all duration-300 hover:shadow-lg"

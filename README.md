@@ -45,6 +45,23 @@ Enhanced with production-quality conversion capabilities:
 - **Audio/Video**: FFmpeg-powered media conversion
 - **Spreadsheets**: Excel, CSV, ODS format support
 
+### 🧠 Document Intelligence
+
+Powered by IBM's open-source Docling toolkit, our Document Intelligence features
+help you extract structured data from complex documents:
+
+- **Advanced PDF Understanding**: Extract text with layout preservation, reading
+  order, and structural elements
+- **Table Extraction**: Convert tables from PDFs and documents into structured
+  data formats
+- **Layout Analysis**: Identify headings, paragraphs, lists, and other document
+  elements
+- **Text Extraction & OCR**: Extract text from scanned documents and images
+- **Document Summarization**: Generate concise summaries of long documents
+
+All document processing happens locally in your browser, ensuring your documents
+remain private and secure.
+
 ### 🛠️ Technical Features
 
 - **Client-Side Processing**: All conversions happen locally - no server uploads
@@ -189,8 +206,8 @@ issues for bugs and feature requests.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file
-for details.
+This project is licensed under the MIT License - see the LICENSE file for
+details.
 
 ## 🙏 Acknowledgments
 

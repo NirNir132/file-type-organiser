@@ -1,0 +1,32 @@
+Test Document for Document Intelligence
+
+Introduction
+============
+This is a test document to demonstrate the Document Intelligence feature of our File Type Organizer application. This document contains various elements like paragraphs, headings, and tables that can be processed by our document processing service.
+
+Methods
+=======
+Our document processing service uses advanced techniques to extract structured data from documents. These include:
+- Text extraction
+- Layout analysis
+- Table detection
+- Heading identification
+- Image recognition
+
+Results
+=======
+The following table shows the results of our document processing tests:
+
+Column 1    Column 2    Column 3
+---------   ---------   ---------
+Data 1      Data 2      Data 3
+Data 4      Data 5      Data 6
+Data 7      Data 8      Data 9
+
+Discussion
+==========
+The document processing service successfully extracted the text, identified headings, and detected tables in the document. The layout analysis correctly identified the document structure, including paragraphs and sections.
+
+Conclusion
+==========
+Our Document Intelligence feature provides valuable insights into document structure and content, making it easier to organize and analyze documents. This test demonstrates the capabilities of the feature and its potential applications. 
